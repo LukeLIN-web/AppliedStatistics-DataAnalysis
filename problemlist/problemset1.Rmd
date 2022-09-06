@@ -1,5 +1,5 @@
 ---
-title: "problemset1"
+title: "Homework1"
 output: html_document
 date: "2022-08-30"
 ---
@@ -10,19 +10,39 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+Consider the following system of equations:
 ```
+3x + 2y + 2z + 4w = 28 
+2x+ y+ z =14 
+2x + 5z + 5w = 28 
+6x+2y+2z+ w=37
+```
+1. Create a matrix in R with the coefficients of the system, and a vector with the constants on the right-hand side of the equations. Call them mat1 and vec1, respectively.
+```{r}
+mat1 <- matrix(c(3,2,2,4,2,1,1,0,2,0,5,5,6,2,2,1), nrow=4, ncol=4, byrow=TRUE); 
+vec1 <- c(28,14,28,37)
+```
+2. Find the inverse of mat1 and call it mat2.
+```{r}
+mat2 <- solve(mat1)
+```
+3. Create a list named list1 having as components mat1, vec1, and mat2. Call these components item1,
+item2, and item3, respectively.
+```{r}
+mat2 <- solve(mat1)
+```
+4. Remove mat1, vec1, and mat2 from the working directory.
+5. Solve the system of equations and call the solution vec2.
+6. Verify the solution.
+7. Verify that if you multiply the inverse matrix mat2 by vec1 you get the solution.
+8. Find the eigenvectors of mat1 and mat2 and verify that the eigenvectors of mat2 are the reciprocals of the eigenvectors of mat1.
+
 
 ## Including Plots
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
+```{r pressure, echo=TRUE}
 plot(pressure)
 ```
 
