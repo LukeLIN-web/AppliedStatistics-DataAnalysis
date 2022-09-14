@@ -1,19 +1,21 @@
 ##  Graphics in R
 ##  Basics
 
-
-
 # Graphics in `R`
   
 example(plot)
 # example(par)
 # example("palette")
+# 可以用example来看用法.
 
 demo(graphics)
 # demo(persp)
 # demo(image)
 # demo(colors)
 
+demo(subset)
+
+example(subset)
 
 # plot
 par(ask = FALSE)

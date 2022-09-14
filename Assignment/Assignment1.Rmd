@@ -19,17 +19,17 @@ Consider the following system of equations:
 ```
 1. Create a matrix in R with the coefficients of the system, and a vector with the constants on the right-hand side of the equations. Call them mat1 and vec1, respectively.
 ```{r}
-mat1 <- matrix(c(3,2,2,4,2,1,1,0,2,0,5,5,6,2,2,1), nrow=4, ncol=4, byrow=TRUE); 
-vec1 <- matrix(c(28,14,28,37),nr=4,nc=1)
+mat1 = matrix(c(3,2,2,4,2,1,1,0,2,0,5,5,6,2,2,1), nrow=4, ncol=4, byrow=TRUE); 
+vec1 = matrix(c(28,14,28,37),nr=4,nc=1)
 ```
 2. Find the inverse of mat1 and call it mat2.
 ```{r}
-mat2 <- solve(mat1)
+mat2 = solve(mat1)
 ```
 3. Create a list named list1 having as components mat1, vec1, and mat2. Call these components item1,
 item2, and item3, respectively.
 ```{r}
-list1 <- list(item1= mat1, item2=vec1,item3=mat2)
+list1 = list(item1= mat1, item2=vec1,item3=mat2)
 ```
 4. Remove mat1, vec1, and mat2 from the working directory.
 ```{r}
@@ -37,7 +37,7 @@ rm(mat1,vec1,mat2)
 ```
 5. Solve the system of equations and call the solution vec2.
 ```{r}
-vec2 <- solve(list1[[1]], list1[[2]])
+vec2 = solve(list1[[1]], list1[[2]])
 ```
 6. Verify the solution.
 ```{r}
@@ -53,10 +53,10 @@ You can see the inverse matrix mat2 by vec1 equals vec2. So that you get the sol
 
 8. Find the eigenvalues of mat1 and mat2 and verify that the eigenvalues of mat2 are the reciprocals of the eigenvalues of mat1.
 ```{r}
-mat1eigen <- eigen(list1[[1]])
-mat2eigen <- eigen(list1[[3]])
-m2v <- mat2eigen$values
-m1v <- mat1eigen$values
+mat1eigen = eigen(list1[[1]])
+mat2eigen = eigen(list1[[3]])
+m2v = mat2eigen$values
+m1v = mat1eigen$values
 print( rev(m1v) *m2v  )
 ```
 

@@ -12,7 +12,7 @@ project，  4-5个学生。  10月20日proposal，  11月26日 report， 12月4-
 
 
 
-#### 第一节课
+### 第一节课
 
 R是大小写敏感的。
 
@@ -88,3 +88,61 @@ x[x > 3]
 mode(list1[[2]]) 这样是数字, mode(list1[2])是list .https://blog.51cto.com/u_15127692/3316141
 
 [] extracts a list, [[]] extracts elements within the list.
+
+### lec3
+
+graph in R
+
+```R
+
+boxplot
+type = p就是point,  =l就是 lines.
+abline, legend, 
+axis
+par(bg = , col= , col.axis= , ) 
+Par( mfrow(c(m,n))
+Par( mfcol(c(m,n))
+locator (n=512,type ="n")
+identify (x,...)
+# Quantiles function
+如果F是连续而且严格递增, 那么Q就是F的反函数.
+If the quantile is not unique, we take the smallest value
+也有可能没有.
+
+```
+
+
+
+problemlist
+
+```
+library(Mass)
+
+```
+
+### lec4
+
+data frame 用$来取列而不是用dot
+
+```R
+# using subset function
+newdata <- subset(mydata, age >= 20 | age < 10,
+select=c(ID, Weight))
+```
+
+
+
+#### problemlist3
+
+正态分布, 
+
+工程师总是为这些测试设定98%的信心水平。在这个水平上为测试找到一个拒绝区域。检验统计量的值是在拒绝区域之内还是之外？你的结论是什么？
+
+alpha = 0.02
+
+
+
+6）用R的命令进行这个测试，看看你得到的P值。你的结论是什么？
+
+7) 由于p值接近她设定的置信度，工程师决定重新抽取一个大小为20的样本，得到的数值如下
+
