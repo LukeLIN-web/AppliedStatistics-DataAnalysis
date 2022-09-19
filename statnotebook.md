@@ -8,10 +8,6 @@ exam   based on R。  开卷 ，两次考试。
 
 project，  4-5个学生。  10月20日proposal，  11月26日 report， 12月4-8日 展示。 
 
-
-
-
-
 ### 第一节课
 
 R是大小写敏感的。
@@ -130,6 +126,14 @@ newdata <- subset(mydata, age >= 20 | age < 10,
 select=c(ID, Weight))
 ```
 
+#### apply
+
+难点在于 margin 维度的区别. 1为行，2为列。
+
+R的apply函数怎么用？ - 李大猫的回答 - 知乎 https://www.zhihu.com/question/39843392/answer/83364326
+
+
+
 
 
 #### problemlist3
@@ -148,9 +152,14 @@ u = 500
  0.02416
 ```
 
-
-
-
-
 7) 由于p值接近她设定的置信度，工程师决定重新抽取一个大小为20的样本，得到的数值如下
 
+
+
+
+
+95%, a = 平均值 - z *标准差 ,  z = 1.96
+
+https://m.medsci.cn/scale/show.do?id=972b231389 可以帮你算.
+
+https://www.jianshu.com/p/cb53a7dc00e3 讲 的很好.

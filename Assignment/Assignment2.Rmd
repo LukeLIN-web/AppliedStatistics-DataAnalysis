@@ -20,52 +20,43 @@ human <- read.table(path,header = TRUE)
 str(human)
 ```
 (b)The body mass index (BMI) is defined as a person’s weight in kilograms divided by the square of height in meters. Add a column named bmi to the data frame with the value of this index for each subject. Count how many subjects have BMI above 30.
-
 ```{r}
 human <- within(human, bmi <- Weight_kg/ (Height_cm/100)^2 )
-sum(human$bmi >30,na.rm = TRUE)
+sum(human$bmi > 30,na.rm = TRUE)
 ```
 (c) Calculate mean and standard deviation for bmi according to Gender. Compare these results and comment. Plot bmi against age, color the dots by Gender, and comment.
-```{r cars}
-
+```{r}
 aggregate(human$bmi,list(human$Gender),FUN=mean)
 aggregate(human$bmi,list(human$Gender),FUN=sd)
 plot(human$bmi ~ human$age,col= ifelse(human$Gender=="F", "red", "black"))
-
 ```
-The average BMI of the male is 1 larger than that of the female, and the standard deviation of females was greater than that of males.
 
+The average BMI of the male is 1 greater than that of the female, and the standard deviation of males was smaller than that of females. 
 It can be seen that many females have low BMI.
 
-
 (d) Using subset, create a new data frame from human with the variables Head_size, Height_cm, Weight_kg for subjects with age between 30 and 50 (both inclusive) and head size bigger than 26. Call this new data frame human1.
-
 ```{r}
-
-human1 =  subset(human, human$age <=50 &  human$age>= 30 &  human$Head_size >26,select=Head_size:Weight_kg)
-
+human1 = subset(human, human$age <= 50 &  human$age>= 30 &  human$Head_size > 26,select=Head_size:Weight_kg)
 ```
 
 (e) Use the function apply twice to calculate the mean and standard deviation for each of the three variables in human1. Call the vectors you obtain human.mean and human.sd.
 ```{r}
-human.mean = apply(human1,1,mean)
-human.sd = apply(human1,1,sd)
-str(human.mean)
+human.mean = apply(human1,2,mean)
+human.sd = apply(human1,2,sd)
 ```
 
 (f) Use the function sweep twice, first to subtract the mean for each variable to the values in human1 and then to divide by the standard deviation. Store the result in a data frame named human.std.
 ```{r}
-
-tmp = sweep( human1, 2, human.mean, FUN = "-")
-
+tmp = sweep(human1, 2, human.mean, FUN = "-")
 human.std = sweep(tmp,2,human.sd,FUN = "/")
-
 ```
 
 (g) The previous procedure is known as standardization. The resulting columns in the human.std should now have mean zero and variance equal to one. Verify this using apply.
-```{r cars}
+```{r}
 std.mean = apply(human.std,2,mean)
 std.sd = apply(human.std,2,sd)
+print(std.mean)
+print(std.sd)
 ```
 
 

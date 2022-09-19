@@ -9,7 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## 5
-
 The engineer always sets a level of confidence of 98% for these tests. Find a rejection region for the test at this level. Is the value of the test statistic inside or outside the rejection region? What is your conclusion?
 
 ```{r}
@@ -17,19 +16,27 @@ The engineer always sets a level of confidence of 98% for these tests. Find a re
              491.80, 494.34, 498.65)
 estmean = mean(bottles)
 estvari = var(bottles)
+n =10
 eststanddev = sd(bottles)
-alpha = 1-0.98
-
+alpha = 1 - 0.98
+print(estmean)
+print(estvari)
+# qnorm(0.975,mean=0,sd=1)
+z = qnorm(0.99,mean=0,sd=1)
+right = estmean +  z* estvari/sqrt(n) 
+left = estmean -  z* estvari/sqrt(n) 
+print(left)
+print(right)
 ```
+the value of the test statistic is outside the rejection region. The machine is work properly.
+
 
 ## 6
-
- Carry this test out using a command in R and look at the p-value that you obtain. What is your conclusion?
- 
+Carry this test out using a command in R and look at the p-value that you obtain. What is your conclusion?
 ```{r}
 t.test(bottles, mu=500) 
 ```
-
+The value of the test statistic is inside the rejection region. This machine cannot work properly.
 
 
 ## 7
@@ -43,7 +50,7 @@ bottles2 <- c(497.24, 497.43, 500.64, 490.59, 496.24, 497.44, 501.69,
 t.test(bottles2)
 ```
 
-We can find that p value is smaller.
+We can find that p value is smaller. The value of the test statistic is outside the rejection region. The machine is work properly.
 
 The larger the sample size, the narrower the calculated confidence interval and the higher the precision, and the smaller the p-value will be. 
 Because the larger the sample size, the smaller the sampling error, when the sample size is as much as the overall (equivalent to the census), there is no sampling error, the more narrow the calculated confidence interval into only one value. 
