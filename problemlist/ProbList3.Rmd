@@ -18,13 +18,12 @@ estmean = mean(bottles)
 estvari = var(bottles)
 n =10
 eststanddev = sd(bottles)
-alpha = 1 - 0.98
 print(estmean)
 print(estvari)
-# qnorm(0.975,mean=0,sd=1)
-z = qnorm(0.99,mean=0,sd=1)
-right = estmean +  z* estvari/sqrt(n) 
-left = estmean -  z* estvari/sqrt(n) 
+#a  = #qnorm(0.01,mean=0,sd=1) # we don't know the sd or mean
+z = qt(0.01,df=9) #degree of freedom就是 n-1
+left = estmean +  z* estvari/sqrt(n) 
+right = estmean -  z* estvari/sqrt(n) 
 print(left)
 print(right)
 ```
@@ -34,9 +33,9 @@ the value of the test statistic is outside the rejection region. The machine is 
 ## 6
 Carry this test out using a command in R and look at the p-value that you obtain. What is your conclusion?
 ```{r}
-t.test(bottles, mu=500) 
+t.test(bottles, mu=500,conf.level = 0.98) 
 ```
-The value of the test statistic is inside the rejection region. This machine cannot work properly.
+The value of the test statistic is outside the rejection region. This machine can work properly.
 
 
 ## 7
@@ -47,10 +46,24 @@ Using this new sample, repeat the test you carried out in (6) and comment on the
 bottles2 <- c(497.24, 497.43, 500.64, 490.59, 496.24, 497.44, 501.69,
               489.98, 493.83, 495.60, 504.33, 495.11, 497.94, 495.03,
               490.75, 498.16, 491.87, 492.94, 494.12, 500.08)
-t.test(bottles2)
+t.test(bottles2,mu=500,conf.level = 0.98)
 ```
 
-We can find that p value is smaller. The value of the test statistic is outside the rejection region. The machine is work properly.
+We can find that p value is smaller. The value of the test statistic is inside the rejection region. The machine is not work properly.
 
 The larger the sample size, the narrower the calculated confidence interval and the higher the precision, and the smaller the p-value will be. 
 Because the larger the sample size, the smaller the sampling error, when the sample size is as much as the overall (equivalent to the census), there is no sampling error, the more narrow the calculated confidence interval into only one value. 
+
+
+## 10
+```{r}
+bottles2 <- c(497.24, 497.43, 500.64, 490.59, 496.24, 497.44, 501.69,
+              489.98, 493.83, 495.60, 504.33, 495.11, 497.94, 495.03,
+              490.75, 498.16, 491.87, 492.94, 494.12, 500.08)
+#power.t.test
+#shapiro.test(bottles)  #power = 0.7   计算出n = 18.06, 我们可以用 19个sample. 
+wilcox.test(bottles,mu=500)
+wilcox.test(bottles2,mu=500) # 
+power.t.test(n=20,delta =2,sd = sd(bottles2),)
+power.t.test(n=30,delta=2,sd= sd(c(bottle,bottles2) , ))
+```

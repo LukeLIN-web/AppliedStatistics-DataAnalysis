@@ -100,21 +100,38 @@ Par( mfrow(c(m,n))
 Par( mfcol(c(m,n))
 locator (n=512,type ="n")
 identify (x,...)
-# Quantiles function
-如果F是连续而且严格递增, 那么Q就是F的反函数.
-If the quantile is not unique, we take the smallest value
-也有可能没有.
-
 ```
-
-
 
 problemlist
 
 ```
 library(Mass)
-
 ```
+
+#### Quantiles function
+如果F是连续而且严格递增, 那么Q就是F的反函数.
+If the quantile is not unique, we take the smallest value
+也有可能没有.
+
+Quantiles ,  deciles 分成10份,  quantiles 分成1/4.   就是
+
+P(X <=z) = q
+
+如果x 加F(x) 不加的话, 那就取左边的.  也就是说quantile不唯一, 我们取最小的z.
+
+如果x不变,  Fx突变的话,  可能就没有z满足F(z) = q . 
+
+qqplot
+
+#### Quantiles plots 
+
+可以用来比较一个dataset和分布的.
+
+如果两个分布属于同一个location and scale family, 那么graph 大约是一条直线. 
+
+
+
+
 
 ### lec4
 
@@ -131,10 +148,6 @@ select=c(ID, Weight))
 难点在于 margin 维度的区别. 1为行，2为列。
 
 R的apply函数怎么用？ - 李大猫的回答 - 知乎 https://www.zhihu.com/question/39843392/answer/83364326
-
-
-
-
 
 #### problemlist3
 
@@ -154,12 +167,33 @@ u = 500
 
 7) 由于p值接近她设定的置信度，工程师决定重新抽取一个大小为20的样本，得到的数值如下
 
-
-
-
-
 95%, a = 平均值 - z *标准差 ,  z = 1.96
 
 https://m.medsci.cn/scale/show.do?id=972b231389 可以帮你算.
 
 https://www.jianshu.com/p/cb53a7dc00e3 讲 的很好.
+
+### lec5
+
+估计
+
+方法1 : 方差不知道的估计,  sn平方来估计  , 有高斯密度估算
+
+方法2 : t分布.估计平均值
+
+1-a 就是置信度.
+
+随机采样
+
+采样分布
+
+power.test. 
+
+有的给定power, 有的给定confidence 
+
+z = qt(0.01,df=9) #degree of freedom就是 n-1
+
+ \* pt()返回值是正态分布的分布函数(probability)
+\> * 函数qt()的返回值是给定概率p后的下百分位数(quantitle)
+\> * rt()的返回值是n个正态分布随机数构成的向量
+
