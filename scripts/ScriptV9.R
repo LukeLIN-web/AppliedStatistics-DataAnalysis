@@ -4,6 +4,9 @@
 
 ## curve
 
+#before = as.numeric(unlist(subset(dataset, type=="before",select=mem)))
+#after = as.numeric(unlist(subset(dataset, type=="after",select=mem)))
+
 ## curve(expr, from, to, add = FALSE, ...)
 curve(x^3 - 3*x, -2,2,lwd=2, col='darkblue')
 curve(x^2 -2 , add= TRUE, col='red3', lwd=3, lty = 3)

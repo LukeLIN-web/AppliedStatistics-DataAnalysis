@@ -4,7 +4,7 @@
 
 markdown， 上传 pdf和code
 
-exam   based on R。  开卷 ，两次考试。 
+exam based on R。  开卷 ，两次考试。 
 
 project，  4-5个学生。  10月20日proposal，  11月26日 report， 12月4-8日 展示。 
 
@@ -14,15 +14,9 @@ R是大小写敏感的。
 
 考试会考一些函数. 
 
-
-
 问题
 
 1. 为啥明明有东西， ls（）显示没有东西。
-
-
-
-
 
 ts : time series
 
@@ -62,8 +56,6 @@ lapply(l,myFun)
 
   results <- append(results, abs(I - result)) 太抽象了这玩意, 这个赋值和append要同时用.
 
-
-
 ##### list
 
 负下标表示扣除相应的元素后的子集，`x[]`表示取`x`的全部元素作为子集
@@ -90,7 +82,6 @@ mode(list1[[2]]) 这样是数字, mode(list1[2])是list .https://blog.51cto.com/
 graph in R
 
 ```R
-
 boxplot
 type = p就是point,  =l就是 lines.
 abline, legend, 
@@ -129,10 +120,6 @@ qqplot
 
 如果两个分布属于同一个location and scale family, 那么graph 大约是一条直线. 
 
-
-
-
-
 ### lec4
 
 data frame 用$来取列而不是用dot
@@ -151,7 +138,7 @@ R的apply函数怎么用？ - 李大猫的回答 - 知乎 https://www.zhihu.com/
 
 #### problemlist3
 
-正态分布, 
+正态分布
 
 工程师总是为这些测试设定98%的信心水平。在这个水平上为测试找到一个拒绝区域。检验统计量的值是在拒绝区域之内还是之外？你的结论是什么？
 
@@ -196,4 +183,30 @@ z = qt(0.01,df=9) #degree of freedom就是 n-1
  \* pt()返回值是正态分布的分布函数(probability)
 \> * 函数qt()的返回值是给定概率p后的下百分位数(quantitle)
 \> * rt()的返回值是n个正态分布随机数构成的向量
+
+### lec6
+
+拒绝了正确的, 就是I类error, 接受了错误的, 是第二类错误.
+
+https://rpsychologist.com/d3/nhst/  可以看一些可视化.
+
+```
+var.test(sample1,sample2)
+with(example,)
+boxplot
+```
+
+Var(X-Y) = Var(X) + Var(Y) - 2 Cov(X,Y)
+
+样本数量多, 就用t检验. 
+
+p 太小了, 就拒绝.
+
+R 语言 table可以看各个类型的数量.
+
+
+
+#### non-parametric
+
+如果不为正态,那就是 在PPT , V18 , This non-parametric test is useful when the assumption of normality is not justified.
 

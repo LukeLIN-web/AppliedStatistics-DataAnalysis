@@ -1,0 +1,129 @@
+---
+title: "assignment4"
+output: html_document
+date: "2022-09-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+The data for this question are stored in the file hw4q1 and correspond to an experiment to measure the effect
+of a new drug in the memory of patients in a nursing home. The patients were tested for memory before the
+treatment started and again after one month taking the drug. The dataset has two variables, mem, the score
+in the test, and type with two values, before for the initial score and after for the final score
+(a) Load the dataset and check whether type is stored as a factor. If it is not, transform it into a factor.
+
+```{r}
+dataset = read.table("hw4q1") 
+str(dataset)
+dataset$type = as.factor(dataset$type)
+str(dataset)
+```
+
+(b) Draw boxplots for mem according to type and comment.
+```{r}
+boxplot(dataset$mem ~dataset$type)
+```
+after one month taking the drug, the patients obviously have better score in test.
+
+(c) Draw a scatterplot of the memory score after versus the memory score before and comment on what
+you observe. Do you think the two scores are independent?
+```{r}
+scatter.smooth(dataset$mem[dataset$type=="before"],dataset$mem[dataset$type=="after"])
+```
+I think the two scores are dependent. Because the polt nearly a straight line.
+
+(d) We want to determine whether the treatment had an impact on the memory score of the patients. State
+clearly the statistical hypothesis that you want to test. What test or tests would you consider adequate
+in this situation and why? What are the assumptions? Are they satisfied in this case? Carry out all
+appropriate tests for this problem and comment on your results.
+```{r}
+t.test(dataset$mem[dataset$type=="before"],dataset$mem[dataset$type=="after"], var.equal = TRUE)
+```
+
+H0: mean1 == mean2
+H1: mean1 != mean2
+We can use t test. Because n <30, std is unknown. 
+We can reject H0, so the treatment actually had an impact on the memory score of the patients.
+
+## Question 2
+
+We will use the data set Pima.te in the MASS package for this question. Open the help file for this data set
+and get acquainted with it. We are going to focus on two variables, bp and type.
+(a) Divide the plotting window into two regions, one single column with two rows, and plot histograms for
+bp for types Yes and No. Since you want to use these graphs for comparing the two populations, use the
+same scales in both cases. Use reasonable labels for the axes and a title indicating the corresponding
+type. Make sure that the area for the figure is large enough so that the histograms are clearly seen.
+Compare the two graphs and comment on similarities and differences.
+
+```{r}
+library(MASS)
+pim = MASS::Pima.te
+str(pim)
+par(mfcol=c(2,1))
+hist(pim$bp[pim$type=="Yes"],col = 'azure2',xlab='diastolic blood pressure (mm Hg)',xlim=c(20,120),  ylab='Freq',main = "diabetic  ", prob= TRUE) 
+hist(pim$bp[pim$type=="No"],col = 'azure2',xlab='diastolic blood pressure (mm Hg)',xlim=c(20,120),  ylab='Freq',main = "No diabetic  ", prob= TRUE)
+```
+Similarties:  blood pressure mainly in 60-80.
+Differences: Diabetic patients have more people over 80 blood pressure.
+
+(b) Boxplot blood pressure as a function of type and comment on the graph. Make sure you have a single
+plotting window with both boxplot.
+```{r}
+boxplot(pim$bp~pim$type)
+```
+Diabetic people have higher mean blood pressure.
+
+(c) Calculate mean and standard deviation for both types and find how many subjects of each type are
+there in the dataset.
+```{r}
+mean(pim$bp[pim$type=="Yes"])
+sd(pim$bp[pim$type=="Yes"])
+#count(pim$bp[pim$type=="Yes"])
+mean(pim$bp[pim$type=="No"])
+sd(pim$bp[pim$type=="No"])
+#count(pim$bp[pim$type=="No"])
+table(pim$type)
+```
+(d) We want to determine if the pulse rate for diabetic women is significantly different from a reference
+value of 70 mm Hg. What (parametric) statistical test do you think is appropriate in this case? Carry
+this test out and discuss your results. Describe the assumptions you need for this test to be valid and
+check whether they are satisfied by the data set.
+```{r}
+(tn <- (mean(pim$bp[pim$type=="Yes"])-70)/(sd(pim$bp[pim$type=="Yes"])/sqrt(108)))
+t.test(pim$bp[pim$type=="Yes"], mu=70)
+```
+
+H0: meanbp==70
+H1: meanbp!=70
+
+The p value is just below 0.05 and the decision depends on our choice for α. If we choose 0.05,0.02 or 0.01,the null hypothesis is rejected. Thus, the pulse rate for diabetic women is significantly different from a reference value of 70 mm Hg.
+
+(e) We now want to compare the two populations (Pima women with and without diabetes) to see if there
+is a difference in the average blood pressure. What (parametric) test would you perform in this case?
+What assumptions are needed? Do they look reasonable in this case? Carry out this test and discuss
+your results.
+```{r}
+t.test(pim$bp[pim$type=="Yes"],pim$bp[pim$type=="No"], var.equal = TRUE)
+```
+H0: mean1 == mean2
+H1: mean1 != mean2
+We can use t test. Because std is unknown. 
+We can reject H0, so the treatment actually had an impact on the memory score of the patients.
+
+(f) What non-parametric tests would be adequate for parts (d) and (e)? Carry this test out and compare
+your results with the tests in (d) and (e).
+
+```{r}
+wilcox.test(pim$bp[pim$type=="Yes"], mu=70)
+wilcox.test(pim$bp[pim$type=="Yes"],pim$bp[pim$type=="No"], alternative = 'less')
+```
+
+The result  is same with (d)
+But the result is not same with (e),so the treatment doesn't had an impact on the memory score of the patients.
+
+
+
