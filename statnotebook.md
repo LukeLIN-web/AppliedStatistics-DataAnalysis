@@ -212,7 +212,11 @@ R 语言 table可以看各个类型的数量.
 
 cut 函数, 设置break ,可以告诉你high有多少,  right = T就是左开右闭, 
 
+```R
+bmi.fac = cut(human$bmi, c(-Inf,20,25,30,Inf),labels = c("underweight","normal","overweight","obese"))
+```
 
+Inf来表示低于和高于. 
 
 #### Contingency table 
 
@@ -220,10 +224,19 @@ cut 函数, 设置break ,可以告诉你high有多少,  right = T就是左开右
 
 自由度 v= (m-1)(n-2)
 
-```
+```R
 chisq.test(stdt.tab)
-fisher.test(titanic.table[1:2,1:2])
+fisher.test(titanic.table[1:2,1:2]) # 通常用在2*2, 样本很少
+mytable <- xtabs(~Treatment+Improved, data = Arthritis) # 生成列联表
 ```
+
+卡方检验属于非参数检验，由于非参检验不存在具体参数和总体正态分布的假设，所以有时被称为**自由分布检验**。
+
+参数和非参数检验**最明显的区别**是它们使用**数据的类型**。
+
+非参检验通常将被试分类，如民主党和共和党，这些分类涉及名义量表或顺序量表，无法计算平均数和方差。
+
+患者接受的治疗和改善水平看上去存在某种关系（ p<0.01 ）这里的**p值表示从总体中抽取的样本行变量与列变量时相互独立的概率**，由于p的概率值很小，所以我们拒绝了治疗类型和治疗结果相互独立的原假设。
 
 #### binomial distribution
 
@@ -237,3 +250,15 @@ prop.test(as.matrix(car.accidents))
 ```
 
 tapply : tapply() is used **to apply a function over subsets of a vector**. It is primarily used when we have the following circumstances
+
+两边有括号可以赋值后再直接print.
+
+怎么求比例?
+
+Build a table with the proportions with respect to the total number of cases for each gender
+
+reating proportion tables. 
+
+是否两个分布是一样的? 用什么检验? 为什么? 应该满足什么条件?
+
+Chi-square distribution approximation  要求 至少要5个样本, 
