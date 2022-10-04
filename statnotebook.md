@@ -204,9 +204,36 @@ p 太小了, 就拒绝.
 
 R 语言 table可以看各个类型的数量.
 
-
-
 #### non-parametric
 
 如果不为正态,那就是 在PPT , V18 , This non-parametric test is useful when the assumption of normality is not justified.
 
+### lec8
+
+cut 函数, 设置break ,可以告诉你high有多少,  right = T就是左开右闭, 
+
+
+
+#### Contingency table 
+
+在统计学中，列联表是一种矩阵形式的表格，显示变量的频率分布。
+
+自由度 v= (m-1)(n-2)
+
+```
+chisq.test(stdt.tab)
+fisher.test(titanic.table[1:2,1:2])
+```
+
+#### binomial distribution
+
+The expected value and variance for this distribution are given by E(nA) = np, Var(nA) = np(1 − p).
+
+If n and p are such that np ≥ 5 and n(1 − p) ≥ 5 the binomial distribution can be approximated by the normal distribution.
+
+```R
+prop.test(n.A,n,p_0)
+prop.test(as.matrix(car.accidents))
+```
+
+tapply : tapply() is used **to apply a function over subsets of a vector**. It is primarily used when we have the following circumstances
