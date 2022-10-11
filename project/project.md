@@ -6,5 +6,27 @@ http://dataportals.org/search
 
 
 
+**Proposal** (6-8 pages, including figures, double spaced). **Due on October 21**  
+
+You are required to select a data set for which the methods covered during the course are appropriate tools for analysis (regression, analysis of variance/covariance, logistic regression, etc.). 
+
+The proposal should include: (1) description of the dataset; 
+
+
+
+(2) the scientific goals, specific hypotheses; 
+
+
+
+(3) preliminary plots,
+
+
+
+
+
+ (4) plan for analysis and modeling.
+
+
+
 
 

@@ -224,6 +224,8 @@ Inf来表示低于和高于.
 
 自由度 v= (m-1)(n-2)
 
+为什么用chisq不用fisher? 什么情况下用chisq?
+
 ```R
 chisq.test(stdt.tab)
 fisher.test(titanic.table[1:2,1:2]) # 通常用在2*2, 样本很少
@@ -262,3 +264,20 @@ reating proportion tables.
 是否两个分布是一样的? 用什么检验? 为什么? 应该满足什么条件?
 
 Chi-square distribution approximation  要求 至少要5个样本, 
+
+
+
+### lec9
+
+```R
+anova 可以获得一个table
+mod0 = lm(stopdis - tire, data = tire)
+model.table()
+```
+
+SSE   
+
+估计方差  . MSE
+
+one -way Anova 包括一些假设
+

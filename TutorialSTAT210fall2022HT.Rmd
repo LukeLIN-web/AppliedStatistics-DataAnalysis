@@ -1,0 +1,319 @@
+---
+title: "tutorial STAT 210 Hypothesis testing"
+author: "Guillermo Granados"
+date: '2022-10-07'
+output: pdf_document
+---
+
+
+What is the scientific method?
+
+Check Armstrong, J., & Green, K. (2022). The Scientific Method: A Guide to Finding Useful Knowledge. Cambridge: Cambridge University Press. doi:10.1017/9781009092265
+
+one important aspect of science is to follow the scietific method to build knowledge 
+
+How? building knowledge from previous information
+Develop Multiple Reasonable Hypotheses With Specified Conditions Prior to Any Analysis
+
+First step is to understand the important problem to solve
+
+a. Designing a study to gather more information: there is the class in design of experiments.
+
+b. Perform data analysis: 
+
+c. explore the data
+
+Provides constrains; illustrate what assumptions can be made; make clear what analysis are viable. 
+
+## what is a hypothesis?
+
+Is an explanation based on evidence
+
+## why we need to be clear about the H0 and H1  ?
+
+reject H0 is the same to accept H1? No, the issue is that every study is limited and only provide evidence but a small study cannnot provide a full proof. 
+
+## Error Type 1 
+
+Reject H0 (the null hypothesis) when is TRUE
+
+Example: a population 100 k trees with mean height of 1.70 m
+
+H0: the mean height is 1.70 m    (which is true!!!)
+
+H1: the mean height is NOT  1.70 m   
+
+```{r }
+## population simulation 
+
+population1<- rnorm(100000, mean=170, sd=30 ) 
+
+hist(population1)
+```
+
+Lets makes a study of this population
+
+```{r }
+Sample1<- sample(population1, 50, replace = F)
+
+mu<-mean(Sample1)
+
+mysd<-sd(Sample1)
+
+myt<- t.test(Sample1,mu=170) 
+
+myt$p.value
+
+```
+
+```{r }
+for(i in 1:1000){
+Sample1<- sample(population1, 50, replace = F)
+
+myt<- t.test(Sample1,mu=170) 
+
+if( myt$p.value<.05 ){break}
+
+}
+i
+```
+
+How many times will be rejected the null hypothesis i.e. how many times we will commit the error type 1???
+
+```{r }
+mypvals<-c()
+ for(i in 1:1000){
+    Sample1<- sample(population1, 50, replace = F)
+    
+    myt<- t.test(Sample1,mu=170) 
+    
+    mypvals[i]<-  myt$p.value
+    
+  }
+
+sum( mypvals<.05 )
+```
+
+Which is a 5% of error type I
+
+Therefore, the threshold of the pvalue or the significance is a limit on how much error type 1 we are allowed to commit the implication should be related to each experiment. 
+
+
+## Error type II
+
+Fail to reject the null hypothesis when is not true. Lets use the same example but with a different hypothesis
+
+
+H0: the mean height is 1.60 m    (Now this is false)
+
+H1: the mean height is NOT  1.60 m   
+
+I have not changed the population,  lets take a sample 
+
+Remember, "doing things right" and now "being correct" is to Reject H0 because H0 is now false. 
+
+```{r }
+Sample2<- sample(population1, 50, replace = F)
+
+mean(Sample2)
+sd(Sample2)
+```
+```{r }
+for(i in 1:10000){
+  Sample2<- sample(population1, 50, replace = F)
+  
+  myt<- t.test(Sample2,mu=160) 
+  
+  if( myt$p.value>=.05 ){break}
+  
+}
+i
+```
+
+How much will be now the percentage of our errors type II???
+
+```{r }
+mypvals2<-c()
+for(i in 1:1000){
+  Sample2<- sample(population1, 50, replace = F)
+  
+  myt<- t.test(Sample2,mu=160) 
+  
+  mypvals2[i]<-  myt$p.value
+  
+}
+
+sum( mypvals2>=.05 )
+```
+ 
+This is a huge percentage.This is why important to consider that this tests can fail, depending on different factors, some times is just chance, then the conclusions should be carefully made. 
+
+
+# power of a test is $1 - Probability \ of \ error \ type \ II$
+
+In the last case is 
+```{r }
+1-sum( mypvals2>=.05 )/1000
+```
+
+The power can depend on the sample size and the hypothesis. Lets check a range of hypothesis 
+
+```{r }
+myhypothesis<-150:190
+mypower<-c()
+for(k in 1:length(myhypothesis) ){
+  
+mypvals2<-c()
+for(i in 1:1000){
+  Sample2<- sample(population1, 50, replace = F)
+  
+  myt<- t.test(Sample2,mu=    myhypothesis[k]   ) 
+  
+  mypvals2[i]<-  myt$p.value
+  
+}
+
+mypower[k]<- 1-sum( mypvals2>=.05 )/1000
+
+
+}
+
+plot(myhypothesis, mypower, type="l")
+```
+
+now lets see the power when the sample size increase
+
+```{r }
+myhypothesis<-150:190
+samplesizes<-c( 10,20,50,70,100,500)
+powermatrix<-matrix (0, length(myhypothesis), length(samplesizes)  )
+
+for(j in 1:length(samplesizes)){
+mypower<-c()
+for(k in 1:length(myhypothesis) ){
+  
+  mypvals2<-c()
+  for(i in 1:1000){
+    Sample2<- sample(population1, samplesizes[j] , replace = F)
+    
+    myt<- t.test(Sample2,mu=    myhypothesis[k]   ) 
+    
+    mypvals2[i]<-  myt$p.value
+    
+  }
+  
+  mypower[k]<- 1-sum( mypvals2>=.05 )/1000
+  
+  
+}
+
+powermatrix[,j]<-mypower
+
+}
+
+samplemat<- matrix( rep(samplesizes, length(myhypothesis)), nrow = length(myhypothesis), byrow = T  )
+
+matplot(  powermatrix, type="l")
+```
+
+Increasing the sample size makes the test (more powerful) to detect when Ho is false. Along with setting a small p-value we also make the test able to detect H0 that are true with a small probability of error. 
+
+#  p-value  
+
+P-value is the maximum probability of getting the observed outcome by chance.
+
+Sil A, Betkerur J, Das NK. P-Value Demystified. Indian Dermatol Online J. 2019 Nov 1;10(6):745-750. doi: 10.4103/idoj.IDOJ_368_19. PMID: 32195200; PMCID: PMC6859766.
+
+
+
+# Improving homework reports
+
+1. divide the questions by verbs and be explicit
+for instance: HW4 Q1 part d)
+
+*We want to determine whether the treatment had an impact on the memory score of the patients. State clearly the statistical hypothesis that you want to test.*
+
+
+
+The statistical hypothesis that I want to test is 
+ 
+$H0:...$
+
+$H1:...$
+
+
+
+*What test or tests would you consider adequate in this situation*
+
+I consider adequate in this situation to use...
+
+*and why?*
+
+The test is adequate because...
+
+*What are the assumptions?*
+
+The assumptions are...
+
+*Are they satisfied in this case?*
+
+Let's check one by the one the assumptions in all ways seen in class by ...
+
+*Carry out all appropriate tests for this problem* 
+
+first test...
+
+The results indicate...because
+
+Second test...
+
+The suresults indicate...because
+
+test  # N ...
+
+The suresults indicate...because
+
+*and comment on your results*
+
+overall,...
+
+
+2. Always shortly comment
+
+
+3. Be concise (helps with time)
+
+
+Alternatively use the examples from the slides as guide
+
+**slides week 6: V21 - Comparing Proportions** 
+
+Example 1 
+
+We want to test
+
+$$H0 : p =  \ vs \ p <$$
+
+and choose a level alpha = 
+
+We  have 
+$$ n = , $$
+$$ n_A = , $$
+$$ \pi =  , $$
+$$ n \times p =  \times = > \ \ and$$
+$$ n \times  (1 - p) =  \times  =  >  $$
+we compute the p value ...
+
+ 
+
+we observed that... and conclude 
+
+
+
+
+
+
+
+
+
+
