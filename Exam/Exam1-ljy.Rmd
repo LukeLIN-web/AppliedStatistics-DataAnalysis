@@ -1,0 +1,111 @@
+---
+title: "exam2021"
+output: html_document
+date: "2022-10-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1 
+
+
+```{r}
+q1df = read.csv()
+par(mfcol=c(1,2))
+boxplot(q1df$Culture~q1df$Sex)
+#boxplot(Culture ~ Sex, ylim = c(0,650), col = 'cornsilk2')
+# boxplot(Theatre ~ Sex, ylim = c(0,650), col = 'cornsilk2')
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+Hypotheses : There is no change in the average behavior in this variable.  H0 . H1 就是有变化 , 平均值不为216 
+Assumption :  Which test:  t test   Why? 因为有方差了,sample 很多,t test满足正太分布 
+ What is the test statistic?   : 标准化的采样平均值 What is the corresponding sampling distribution? 是student t distribution
+计算culture的平均值和方差.
+```{r}
+t.test(Culture, mu=260)
+(tn <- (mean(Culture)-216)/(sd(Culture)/sqrt(699)))
+```
+
+(c) Test the hypothesis that women spend more on theater visits than men. What is your conclusion?
+
+```{r}
+ t.test(Theatre[Sex == 0], Theatre[Sex == 1], alternative = 'less')
+```
+(d) What parametric test would be adequate to compare the average expenditure in theater visits in the survey year and the preceding year for the whole population? Carry this test out and discuss your findings.
+同一个subjectt, 两年, 用paired test
+
+
+(e) What non-parametric test or tests would be adequate for (b) and (c)? Perform these tests and compare your results with what you obtained before.
+
+非参数, 
+# Question2
+The data set Auto in the ISLR package has information on nine variables for 392 vehicles. For this question, we will be only interested in two of them, mpg and origin. The first variable, mpg, corresponds to fuel consumption in miles per gallon for each vehicle, while origin is coded as 1 (American), 2 (European), and 3 (Japanese).
+(a) Create a data frame named q2.df with the two columns corresponding to these variables. Do a boxplot of mpg as a function of origin. Comment on what you observe.
+```{r}
+library(ISLR)
+str(Auto)
+q2.df <- subset(Auto, select = c(mpg, origin))
+str(q2.df)
+boxplot(mpg ~ origin, data = q2.df, col = 'cornsilk2')
+```
+(b) Using the information in mpg, add a factor fmpg to q2.df created according to the following rule: if mpg is below 20, the value for the factor is low; if mpg is between 20 and 35, the value is med, and if mpg is above 35, the value is high. One way to do this is using the function cut. Also, change the labels in the origin factor to Am, Eu, and Jap.
+```{r}
+ q2.df$fmpg <- cut(q2.df$mpg,c(0,20,35,50),labels = c('low','med','high'))
+q2.df$origin <- factor(q2.df$origin, labels = c('Am','Eu','Jap'))
+str(q2.df)
+```
+
+(c) Produce a table of origin and fmpg and do a mosaic plot. The table should have origin as rows and fmpg as columns. Comment on what you observe. Produce a second table with proportions calculated relative to the different levels of origin. Again, comment on what you observe.
+```{r}
+
+(q2.tbl <- with(q2.df, table(origin, fmpg)))
+mosaicplot(q2.tbl,ylab = 'mpg' )
+prop.table(q2.tbl,1) # 按行分
+```
+(d) We want to determine whether the fuel consumption categories that we created are homogeneously distributed for the different origins of the vehicles.
+
+• Which test or tests do you know that can be used for this? 我们可以用fisher 检验和chi square检验. 
+• What are the underlying assumptions? 要求每个cell 的值要大于5 .  可能不成立. 
+• Are they satisfied in this case?     
+• Carry out all the tests you mentioned and discuss the results.
+• What are your conclusions?
+
+```{r}
+colSums(prop.table(q2.tbl))%*%t(rowSums(prop.table(q2.tbl))) *392
+chisq.test(q2.tbl)
+chisq.test(q2.tbl)$expected
+fisher.test(q2.tbl)
+```
+所有的值都大于5 . 所以条件成立.  p= 0那么就拒绝原假设.  
+
+Question 3 (35 points)
+The data in the file sulfa.txt has the results of an experiment to study the effect of sulfamerazine (Sulfa) on the amount of hemoglobin (Hemo) in trouts. The trouts were placed at random in four different containers, and the fish food added contained, respectively, 0, 5, 10, and 15 grams of sulfamerazine per 100 pounds of fish (coded 1, 2, 3, and 4). The measurements were made on ten randomly selected fish from each container after 35 days.
+a) Read the data file into a data frame named q3.df. Make sure the data are read correctly. Add a factor fSulfa with the information in the variable Sulfa.
+(b) Do boxplots for Hemo as a function of Sulfa (all the boxplots should appear on the same panel). Add the points to this graph. Comment on what you observe.  先增加, 后减少, uniformly 增加, 有一个二次方关系, box的大小不太一样, 我们需要在 diagnostic诊断 plots中检查. 
+
+(c) Fit an analysis of variance model to this data. Use α = 0.02 for your test. What do you conclude from this analysis?
+
+
+(d) Find the estimate for the mean response for each treatment. Find also the effects, and include the standard errors in each case. What are the estimated values for the variance and standard deviation in this experiment?
+(e) What are the assumption on which the analysis of variance model is based? Draw diagnostic plots for checking these assumptions and discuss the results.
+
+```{r}
+model1 <- aov(Hemo ~ fSulfa, data = q3.df)
+summary(model1)
+(means <- model.tables(model1, 'means', se = TRUE))
+model.tables(model1, se = TRUE) # 标准差的影响.
+# 估计方差, 来自 anova table ,deviation 一个个开根号.
+par(mfrow = c(2,2))
+plot(model1)
+par(mfrow=c(1,1))
+```
+方差估计, 
+怎么add point? 就用points函数
+假设:  是正态分布的, 
+normal quantitle 很好, 证明 residuals 是正态分布, 
+\ 16 17 18 有更大的residuals, 属于同一个treatment level.
