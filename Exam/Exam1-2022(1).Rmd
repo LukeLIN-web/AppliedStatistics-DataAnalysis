@@ -3,7 +3,7 @@ title:      |
   | STAT 210
   | Applied Statistics and Data Analysis
   | First Exam  
-author: " Juyi Lin"
+author: " "
 date: "October 22, 2022"
 output: html_document
 ---

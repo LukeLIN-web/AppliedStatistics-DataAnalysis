@@ -15,8 +15,8 @@ You will need the file Human_data.txt. Place this file on your working environme
 Read the file Human_data.txt and store this in an object called human. Before reading the data, check whether the file has a header. If it does, use the appropriate argument in the read function to include the header. Look at the structure of human using the function str.
 ```{r}
 library(psych)
-path = "Human_data.txt"
-human <- read.table(path,header = TRUE)
+path = 'Human_data.txt'
+human <- read.table(path,header = TRUE) # T就可以 
 str(human)
 ```
 (b)The body mass index (BMI) is defined as a person’s weight in kilograms divided by the square of height in meters. Add a column named bmi to the data frame with the value of this index for each subject. Count how many subjects have BMI above 30.
@@ -26,18 +26,24 @@ sum(human$bmi > 30,na.rm = TRUE)
 ```
 (c) Calculate mean and standard deviation for bmi according to Gender. Compare these results and comment. Plot bmi against age, color the dots by Gender, and comment.
 ```{r}
+# 可以用 tapply(human$bmi, human$Gender, mean)
 aggregate(human$bmi,list(human$Gender),FUN=mean)
 aggregate(human$bmi,list(human$Gender),FUN=sd)
 plot(human$bmi ~ human$age,col= ifelse(human$Gender=="F", "red", "black"))
+#boxplot(bmi ~ Gender, data = human)
 ```
 
 The average BMI of the male is 1 greater than that of the female, and the standard deviation of males was smaller than that of females. 
-It can be seen that many females have low BMI.
+It can be seen that many females have low BMI. # 这句话可以不说
+
+答案Answer: We see that females have a lower mean value for BMI but the standard deviation is bigger. so the distribution is more spread. This is also apparent form the box plots.
+The median for males is higher and the range of values and the box width are shorter than for females. 讨论box的宽度, 中位数的高度. 
 
 (d) Using subset, create a new data frame from human with the variables Head_size, Height_cm, Weight_kg for subjects with age between 30 and 50 (both inclusive) and head size bigger than 26. Call this new data frame human1.
 ```{r}
 human1 = subset(human, human$age <= 50 &  human$age>= 30 &  human$Head_size > 26,select=Head_size:Weight_kg)
 ```
+也可以用c包裹起来 select = c(Head_size, Height_cm, Weight_kg)), 然后不用每个都加human前缀
 
 (e) Use the function apply twice to calculate the mean and standard deviation for each of the three variables in human1. Call the vectors you obtain human.mean and human.sd.
 ```{r}
@@ -45,12 +51,13 @@ human.mean = apply(human1,2,mean)
 human.sd = apply(human1,2,sd)
 ```
 
+
 (f) Use the function sweep twice, first to subtract the mean for each variable to the values in human1 and then to divide by the standard deviation. Store the result in a data frame named human.std.
 ```{r}
 tmp = sweep(human1, 2, human.mean, FUN = "-")
 human.std = sweep(tmp,2,human.sd,FUN = "/")
 ```
-
+可以叫tmp:  human.cen
 (g) The previous procedure is known as standardization. The resulting columns in the human.std should now have mean zero and variance equal to one. Verify this using apply.
 ```{r}
 std.mean = apply(human.std,2,mean)
@@ -58,7 +65,7 @@ std.sd = apply(human.std,2,sd)
 print(std.mean)
 print(std.sd)
 ```
-
+可以用round(apply(human.std, 2, mean),14) 
 
 ## Question 2
 
@@ -85,6 +92,7 @@ Median, Mean and 3rd quantile of male salary are higher than female.
 human3 = split(human,list(human$Gender,human$Ocupation))
 ```
 human3 is a list have 6 list, first is female without work , second is male without work, third is female student, fourth is male student, fifth is female worker, sixth is male worker.
+The file human3 is a list with six components, each of which is a data frame. The components correspond to the combination of two genders and three ocupation status.
 
 (d) Using the data in human3 obtain numerical summaries for the variable Salary for males and females that work and compare.
 ```{r}
@@ -92,6 +100,7 @@ summary(human3$F.Work$Salary)
 summary(human3$M.Work$Salary)
 ```
 Male workers have more Mean/Median salaries than female workers. However, the difference is smaller for all males compared with females. 
+
 
 (e) The function cut divides the range of values of a continuous variable into intervals and creates a factor according to which interval the values fall. You have to use this function to divide the range of salaries in the file human into three intervals, according to the following scheme: below 8000 is low, between 8000 and 18000 is medium, and more than 18000 is high. Call the resulting factor sal. Use the function table to count how many subjects fall in each category.
 ```{r}
@@ -106,3 +115,4 @@ summary(human4$high.M$Salary)
 ```
 
 we can find that in high salary people, females have higher mean salaries. This conclusion is different from the previous comparison. 
+答案: The reason for this change is the effect of two large female salaries on a set of reduced size. See the boxplots below.boxplot(Salary ~ Gender, data = human[sal == 'high',])

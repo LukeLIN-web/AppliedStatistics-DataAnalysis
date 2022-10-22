@@ -20,37 +20,55 @@ in the test, and type with two values, before for the initial score and after fo
 dataset = read.table("hw4q1") 
 str(dataset)
 dataset$type = as.factor(dataset$type)
+# data  = factor( , levels = "before, after)
 str(dataset)
 ```
 
 (b) Draw boxplots for mem according to type and comment.
 ```{r}
-boxplot(dataset$mem ~dataset$type)
+boxplot(dataset$mem ~dataset$type) # 可以不加前缀 , data = data2,col = 'lightblue'
 ```
 after one month taking the drug, the patients obviously have better score in test.
+每个数据集都是symmetric and have similar dispersion.
 
 (c) Draw a scatterplot of the memory score after versus the memory score before and comment on what
 you observe. Do you think the two scores are independent?
 ```{r}
 scatter.smooth(dataset$mem[dataset$type=="before"],dataset$mem[dataset$type=="after"])
+
 ```
 I think the two scores are dependent. Because the polt nearly a straight line.
+答案: 说好听点, 是 linear relation between the scores before and after treatment.This indicates that these variables are correlated.
 
 (d) We want to determine whether the treatment had an impact on the memory score of the patients. State
 clearly the statistical hypothesis that you want to test. What test or tests would you consider adequate
 in this situation and why? What are the assumptions? Are they satisfied in this case? Carry out all
 appropriate tests for this problem and comment on your results.
 ```{r}
-t.test(dataset$mem[dataset$type=="before"],dataset$mem[dataset$type=="after"], var.equal = TRUE)
+t.test(dataset$mem[dataset$type=="before"],dataset$mem[dataset$type=="after"], var.equal = TRUE) 
+这是错的!
+#  答案如下, 必须要用#paired =True
+t.test(data2$mem[data2$type == 'after'],
+       data2$mem[data2$type == 'before'],
+       paired = TRUE)
+#data2$dif <- data2$mem[data2$type == 'after'] -
+#  data2$mem[data2$type == 'before']
+#qqnorm(data2$dif)
+#qqline(data2$dif) # 这个可以检验是正态分布. 因为t
+#shapiro.test(data2$dif)
+wilcox.test(data2$mem[data2$type == 'after'],
+       data2$mem[data2$type == 'before'],
+       paired = TRUE)
 ```
 
 H0: mean1 == mean2
 H1: mean1 != mean2
 We can use t test. Because n <30, std is unknown. 
 We can reject H0, so the treatment actually had an impact on the memory score of the patients.
+p很小, 所以拒绝假设.
+
 
 ## Question 2
-
 We will use the data set Pima.te in the MASS package for this question. Open the help file for this data set
 and get acquainted with it. We are going to focus on two variables, bp and type.
 (a) Divide the plotting window into two regions, one single column with two rows, and plot histograms for
@@ -66,9 +84,19 @@ str(pim)
 par(mfcol=c(2,1))
 hist(pim$bp[pim$type=="Yes"],col = 'azure2',xlab='diastolic blood pressure (mm Hg)',xlim=c(20,120),  ylab='Freq',main = "diabetic  ", prob= TRUE) 
 hist(pim$bp[pim$type=="No"],col = 'azure2',xlab='diastolic blood pressure (mm Hg)',xlim=c(20,120),  ylab='Freq',main = "No diabetic  ", prob= TRUE)
+#答案如下: 
+bp.yes <- Pima.te$bp[Pima.te$type == 'Yes']
+bp.no <- Pima.te$bp[Pima.te$type == 'No']
+par(mfrow=c(2,1))
+hist(bp.yes, xlim = c(20,120), ylim = c(0, 0.035), freq = F,
+     xlab = 'blood pressure', main = 'Diabetic Pima Women')
+hist(bp.no, xlim = c(20,120), ylim = c(0, 0.035), freq = F,
+     xlab = 'blood pressure', main = 'Non-Diabetic Pima Women')
 ```
 Similarties:  blood pressure mainly in 60-80.
 Differences: Diabetic patients have more people over 80 blood pressure.
+ 不过两个dispersion看起来差不多
+ 
 
 (b) Boxplot blood pressure as a function of type and comment on the graph. Make sure you have a single
 plotting window with both boxplot.
@@ -76,6 +104,7 @@ plotting window with both boxplot.
 boxplot(pim$bp~pim$type)
 ```
 Diabetic people have higher mean blood pressure.
+boxes高度差不多. 
 
 (c) Calculate mean and standard deviation for both types and find how many subjects of each type are
 there in the dataset.
@@ -88,6 +117,8 @@ sd(pim$bp[pim$type=="No"])
 #count(pim$bp[pim$type=="No"])
 table(pim$type)
 ```
+
+
 (d) We want to determine if the pulse rate for diabetic women is significantly different from a reference
 value of 70 mm Hg. What (parametric) statistical test do you think is appropriate in this case? Carry
 this test out and discuss your results. Describe the assumptions you need for this test to be valid and
@@ -95,6 +126,7 @@ check whether they are satisfied by the data set.
 ```{r}
 (tn <- (mean(pim$bp[pim$type=="Yes"])-70)/(sd(pim$bp[pim$type=="Yes"])/sqrt(108)))
 t.test(pim$bp[pim$type=="Yes"], mu=70)
+qqnorm(bp.yes); qqline(bp.yes)# 证明是正态分布. shapiro.test(bp.yes) 
 ```
 
 H0: meanbp==70
@@ -102,17 +134,22 @@ H1: meanbp!=70
 
 The p value is just below 0.05 and the decision depends on our choice for α. If we choose 0.05,0.02 or 0.01,the null hypothesis is rejected. Thus, the pulse rate for diabetic women is significantly different from a reference value of 70 mm Hg.
 
+拒绝原假设, 
+
 (e) We now want to compare the two populations (Pima women with and without diabetes) to see if there
 is a difference in the average blood pressure. What (parametric) test would you perform in this case?
 What assumptions are needed? Do they look reasonable in this case? Carry out this test and discuss
 your results.
 ```{r}
 t.test(pim$bp[pim$type=="Yes"],pim$bp[pim$type=="No"], var.equal = TRUE)
+t.test(bp ~ type, data = Pima.te)
 ```
 H0: mean1 == mean2
 H1: mean1 != mean2
 We can use t test. Because std is unknown. 
 We can reject H0, so the treatment actually had an impact on the memory score of the patients.
+因为样本足够大, 中心极限定理证明这是合理的假设. The test
+two sample test, 
 
 (f) What non-parametric tests would be adequate for parts (d) and (e)? Carry this test out and compare
 your results with the tests in (d) and (e).
@@ -120,10 +157,16 @@ your results with the tests in (d) and (e).
 ```{r}
 wilcox.test(pim$bp[pim$type=="Yes"], mu=70)
 wilcox.test(pim$bp[pim$type=="Yes"],pim$bp[pim$type=="No"], alternative = 'less')
+#答案
+wilcox.test(Pima.te$bp, mu = 70)
+wilcox.test(bp ~ type, data = Pima.te) # 不用写一堆条件. 
 ```
+
+
 
 The result  is same with (d)
 But the result is not same with (e),so the treatment doesn't had an impact on the memory score of the patients.
-
-
+答案: 
+The p-value in this case is 0.0173, which is higher than before. At the 5% or 2% level we would reach the same conclusion as in (d), but at the 1% level it would be different
+The p-value is small and the conclusion coincides with the t-test.
 

@@ -89,8 +89,10 @@ identify (x,...)
 
 problemlist
 
-```
+```R
 library(Mass)
+ human <- read.table('Human_data.txt', header = T) # 写个T就行不用写True
+str(human)
 ```
 
 #### Quantiles function
@@ -163,15 +165,21 @@ https://www.jianshu.com/p/cb53a7dc00e3 讲很好.
 
 两列数字平均值大小比较, 也可以用t检验. 因为每列都数据足够多. 所以中心极限定理  central limit theorem 证明这是合理的.  想要知道是否女生更多, 所以就单边alternative. 
 
+假设就是,  假设 sample distribution 是接近Gaussian的, 样本数量够大的时候就是合理假设.  即使不是正态分布也可以.
+
 ```
 t.test(Theatre[Sex == 0], Theatre[Sex == 1], alternative = 'less')
 ```
 
 p很小, 就拒绝原null假设.  
 
-同一个subject, 两年, 用paired test.
+同一个subject, 前后两个对比 , 用paired test. 
 
-`t.test(Theatre_ly, Theatre, paired = TRUE)`
+`t.test(Theatre_ly, Theatre, paired = TRUE)`  或者也可能用 wilcoxon test.
+
+t.test要求是正态分布, 可以先用 qqplot  `shapiro.test(data2$dif)`来检验一下.  
+
+ wilcoxon test. 要求分布是连续而且对称.
 
 power.test
 
@@ -257,6 +265,8 @@ The expected value and variance for this distribution are given by E(nA) = np, V
 
 If n and p are such that np ≥ 5 and n(1 − p) ≥ 5 the binomial distribution can be approximated by the normal distribution.
 
+proportions test的假设, sample足够大, 
+
 ```R
 prop.test(n.A,n,p_0)
 prop.test(as.matrix(car.accidents))
@@ -304,3 +314,9 @@ SSE
 Analysis of Variance (Anova)  one -way Anova 包括一些假设
 
 估计方差, 来自 anova table ,deviation 一个个开根号.
+
+Anova table是啥
+
+
+
+应该.

@@ -18,6 +18,7 @@ A description of the variables can be found at http://www.stat.berkeley.edu/user
 BABIES = read.table("http://www.stat.berkeley.edu/users/statlabs/data/babies.data",header = TRUE)
 CLEAN = subset(BABIES, bwt !=999 & gestation !=999 & parity != 9 & height != 99 & weight !=999 & smoke != 9)
 ```
+
 (ii) Use the information in CLEAN to create a histogram of the birth weights of babies whose mothers have never smoked (smoke=0) and another histogram placed directly below the first in the same graphics device for the birth weights of babies whose mothers currently smoke (smoke=1). Use a common range of the x-axis for both histograms. Superimpose a density curve over each histogram. Use informative titles and labels for your graphs. Comment on what you observe.
 ```{r}
 smokemother = subset(CLEAN, smoke==1)
@@ -27,8 +28,16 @@ hist(smokemother$bwt,col = 'azure2',xlab='ounces',xlim=c(50,180),  ylab='Freq',m
 lines(density(smokemother$bwt),col = "green")
 hist(nosmokemother$bwt,col = 'azure2',xlab='ounces', xlim=c(50,180), ylab='Freq',main = "nosmokemother birth weights of babies",prob= TRUE)
 lines(density(nosmokemother$bwt),col = "green")
+#可以这么写 就不用提前subset了
+#  hist(bwt[smoke==0], xlim=c(30, 180), xlab='birth weight (oz)', main='Non-smoking', freq = FALSE)
+# lines(density(bwt[smoke==0]), col='red',lwd=2)
+#hist(bwt[smoke==1], xlim=c(30, 180), xlab='birth weight (oz)',main='Smoking', freq = FALSE) lines(density(bwt[smoke==1]), col='red',lwd=2)
+par(mfrow=c(1,1))
 ```
 The birth weights of babies whose mothers have never smoked have more big case than the birth weights of babies whose mothers currently smoke. The birth weights of babies whose mothers currently smoke have more outliers.
+
+答案: 我们发现吸烟的妈妈, 分布, shifted to smaller values with respect to the non-smoking mothers.
+
 
 
 (iii) The body weight index or body mass index (bmi) is defined as the weight of a person divided by the height squared and is measured in units of kg/m2. Compute the bmi for each mother in CLEAN. Observe that you have to convert the measurements in the data frame to metric (0.0254 m= 1 in., and 0.45359 kg= 1 lb.). Modify the variables weight and height so that they now appear in metric units (kg and m), and add bmi to CLEAN and store the result in CLEANP. Count how many subjects have bmi above 30.
@@ -58,7 +67,8 @@ Explain clearly the reasons for your choices.
 
 ```{r}
 library(car)
-dataq4 = read.csv("data_q4.csv")
+dataq4 = read.csv("data_q4.csv")# header =T
+#par(mfrow = c(2,2))
 qqPlot(dataq4$smpl1, dist = 'cauchy',envelope = FALSE)
 qqPlot(dataq4$smpl2, dist = 'cauchy',envelope = FALSE)
 qqPlot(dataq4$smpl3, dist = 'cauchy',envelope = FALSE)
