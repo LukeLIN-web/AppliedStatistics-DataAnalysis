@@ -1,0 +1,92 @@
+---
+title:    |
+  | STAT 210
+  | Applied Statistics and Data Analysis: 
+  | Homework 5
+author: 
+date: "Due on Oct. 31/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Question 1
+
+The dataset `anorexia` in the `MASS` package has information about 72 anorexia patients, 26 on the control (`Cont`) group, 29 in the `CBT` treatment group, and 17 in family treatment (`FT`). The data correspond to weight before and after treatment for each patient. 
+
+Do a complete analysis of variance for this set. Determine whether the treatments have an effect on the weight of the patient by means of a hypothesis test. Plot the diagnostic charts and comment on them. Use also Levene’s test and Shapiro-Wilk. Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
+
+
+```{r setup, include=FALSE}
+
+
+```
+
+
+## Question 2
+In an experiment to study the effect of the amount of baking powder in a biscuit dough upon the rise heights of the biscuits, four levels of baking powder were tested and four replicate biscuits were made with each level in a random order. The results are shown in the table below.
+
+\medskip
+\begin{center}
+\begin{tabular}{r|rrrr}
+.25 tsp & 11.4 & 11.0 & 11.3 & 9.5\\
+.50 tsp & 27.8 & 29.2 & 26.8 & 26.0\\
+.75 tsp & 47.6 & 47.0 & 47.3 & 45.5\\
+ 1.0 tsp & 61.6 & 62.4 & 63.0 & 63.9
+\end{tabular}
+\end{center}
+
+
+
+<!-- \begin{center} -->
+<!-- \begin{tabular}{rrrr} -->
+<!-- .25 tsp & .5 tsp & .75 tsp & 1 tsp\\ -->
+<!-- \hline -->
+<!-- 11.4 & 27.8 & 47.6 & 61.6 \\ -->
+<!-- 11.0 & 29.2 & 47.0 & 62.4\\ -->
+<!-- 11.3 & 26.8 & 47.3 & 63.0\\ -->
+<!-- 9.5  & 26.0 & 45.5 & 63.9 -->
+<!-- \end{tabular} -->
+<!-- \end{center} -->
+
+
+Do a complete analysis of variance for this set. Determine whether the treatments have an effect of the rise of the dough by means of a hypothesis test. Plot the diagnostic charts and comment on them. Use also Levene’s test and Shapiro-Wilk. Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
+
+
+<!--  -->
+
+<!-- (a) Consider the third group (`FT`), we want to determine whether the treatment had an impact on the weight of the patients. State clearly the statistical hypothesis that you want to test. What test or tests would you consider adequate in this situation and why? What are the assumptions? Are they satisfied in this case? Carry out all appropriate tests for this problem and comment on your results. -->
+
+<!-- (b) Repeat part (a) for the control (`Cont`) group. Carry out the same procedures and compare your results. -->
+
+<!-- ## Question 3 -->
+<!-- For this question, we will use the file `Cars93` in the `MASS` package. -->
+
+<!-- (i) Use `str` to see the structure of the data set. -->
+<!-- (ii) Do a matrix of plots with the variables `MPG.highway, MPG.city, EngineSize, Horsepower`, and `Weight`. Use a solid dot for the plots and color the dots by `Origin`. -->
+<!-- (iii) Do a boxplot of `Price` as a function of cylinders. Add the points to the boxplots and color them by `AirBags`. Add a legend for the color of the points on the top left corner. -->
+<!-- (iv) Comment on the relation between these three variables. Can you explain the odd shapes of the plots for `Cylinders` equal to 5 and `rotary`? -->
+
+
+
+<!-- ## Question 4 -->
+<!-- The file `data_q4.csv` has four simulated samples of size 20 coming from the following distributions -->
+
+<!-- - Standard normal, $N(0,1)$ -->
+<!-- - Uniform in [0,1], $U[0,1]$ -->
+<!-- - Chi-square with 2 degrees of freedom, $\chi^2_2$ -->
+<!-- - $t$ with 2 degrees of freedom, $t_2$ -->
+
+<!-- You have to identify which is which using quantile plots. Since you will need to draw quantile plots with respect to distributions other than the normal, it will be convenient to use a new function named `qqPlot` in the package `car`.  -->
+<!-- You will need to install this package following a similar procedure as described above for `DAAG`. This function has syntax -->
+<!-- ```{r, eval=FALSE} -->
+<!-- qqPlot(x, distribution = 't', df = 2)   -->
+<!-- ``` -->
+<!-- for plotting a quantile graph of vector `x` with respect to the $t$ distribution with two degrees of freedom. The default distribution for `qqPlot` is the normal distribution. You can find more details in the help for `qqPlot`. By default, this function draws confidence bands which I find in many cases of little use, and in some cases misleading. If you don't want them in your graph, add `envelope = FALSE` in your call. -->
+
+<!-- **Explain clearly the reasons for your choices.** -->
+
+
