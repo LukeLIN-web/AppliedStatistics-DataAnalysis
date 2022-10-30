@@ -326,6 +326,8 @@ model1 <- aov(Hemo ~ fSulfa, data = q3.df) # aov可以fit一个model,p很小的�
 
 有k个level, 有k-1个df. 自由度
 
+
+
 Analysis of Variance (Anova)  one -way Anova 包括一些假设
 
 估计方差, 来自 anova table ,deviation 一个个开根号.
@@ -336,7 +338,17 @@ Plot the diagnostic charts and comment on them.
 
 diagnostic就是model1 plot的第一张图. 
 
-怎么做 Levene’s test and Shapiro-Wilk. 
+#### Levene’s test
+
+`library(car) leveneTest(model1)`
+
+This test has a large p-value, saying that hypothesis of homoscedasticy is not rejected.  **异质变异数**（英语：Heteroscedasticity），又称**分散不均一性**，指的是一系列的[随机变量](https://zh.m.wikipedia.org/wiki/随机变量)间的方差不相同，相对于同质变异数（Homoscedasticity）。 
+
+#### Shapiro-Wilk. 
+
+
+
+`shapiro.test(df1$sp1)` 就是检查是不是正态分布, 做t-test之前要检查!也可以同时做一个qqnorm qqline检查.    `shapiro.test(resid(mod1)) `如果p比0.05大, 那么 This shows that at the 5% level (or lower levels) we cannot reject the null hypothesis of Gaussianity.
 
 写出equation, note anova-pdf中有lm的例子, 但是什么时候是lm拟合? 什么时候不用lm拟合? 
 

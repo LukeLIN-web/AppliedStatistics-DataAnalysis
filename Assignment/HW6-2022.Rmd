@@ -52,8 +52,6 @@ p = 0.0058, alpha = 0.01, p < alpha, reject null hypothesis. We choose alternati
 μˆ+τˆ3 = 2.174000e+01
 μˆ+τˆ4 = 2.174000e+01
 
-
-
 Plot the diagnostic charts and comment on them. 
 ```{r}
 par(mfrow=c(2,2))
@@ -63,17 +61,17 @@ Since we have 5 replications for each treatment level and there are only 5 x-val
 We look in this graphs for constant variance. We see that values in some cases appear to be more spread than in others, and this may be a sign of non-constant variance.
 However, we only have a few points and this is difficult to determine.
 
-Use also Levene’s test and Shapiro-Wilk. 
+Next, we do the Shapiro-Wilk and Levene tests for the residuals.
 ```{r}
 shapiro.test(resid(mod1))
 ```
-
+This shows that at the 5% level (or lower levels) we cannot reject the null hypothesis of Gaussianity.
 
 ```{r}
 library(car)
 leveneTest(mod1)
 ```
-
+This test has a large p-value, saying that hypothesis of homoscedasticy is not rejected.
 
 
 Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
@@ -154,6 +152,8 @@ library(car)
 shapiro.test(resid(model1))
 leveneTest(model1)
 ```
+Shapiro-Wilk shows that at the 5% level (or lower levels) we cannot reject the null hypothesis of Gaussianity.
+leveneTest shows that has a large p-value, saying that hypothesis of homoscedasticy is not rejected.
 
 
 Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.

@@ -40,20 +40,31 @@ boxplot(sp1 ~ DH,ylim = c(0,0.8) , data = df1,  col = 'cornsilk2')
 boxplot(sp2 ~ DH,  ylim = c(0,0.8) , data = df1,  col = 'cornsilk2')
 ```
 
-I set the same y scales in both graphs.  The first boxplot shows the speed with the right dominant hand has higher mean, and wider range. The second boxplot shows the speed with the non-dominant hand, if the right hand is dominant hand, has lower mean. 
-Compare two boxplots, we can find that the speed with the non-dominant hand has lower mean than the speed with the dominant hand. 
+I set the same y scales in both graphs.  The first boxplot shows the speed with the right dominant hand has higher mean 讲了, and wider range.  有更高的median speed. 50%比0.5快.
+The second boxplot shows the speed with the non-dominant hand, if the right hand is dominant hand, has lower mean. 
+Compare two boxplots, we can find that the speed with the non-dominant hand has lower mean than the speed with the dominant hand.   讲中位数的区别. 
+ 
 答案:
-The first boxplot (dominant hand) shows that right-handed subjects achieved a higher median speed and
+The first boxplot (dominant hand) shows that right-handed subjects achieved a higher median speed  and
 have a wider range of values than left-handed subjects. Particularly, about 50% of right-handed subjects
 achieved speeds of 0.5 or more while less than 25% of left-handed subjects achieved this range of values.
 
 The second boxplot shows similar distributions for both groups, with left-handed subjects having a slightly
 higher median speed. Also, values for the non-dominant hand (second plot) are lower than for the dominant
 hand (first plot).
+第一个图表（优势手）显示，右手受试者取得了更高的中位速度，并且比左手受试者的数值范围更广。
+比左手受试者有更大的数值范围。特别是，大约50%的右撇子受试者
+达到了0.5或更高的速度，而只有不到25%的左撇子受试者达到了这个范围的数值。
 
+第二张图表显示两组人的分布相似，左撇子受试者的速度中值略高。
+左右手受试者的速度中位数略高。另外，非优势手的数值（第二张图）比优势手的数值要低。
 
 
 (b) (10 points)  We want to explore if the speed with the dominant hand is the same as with the non-dominant hand. What parametric test or tests are appropriate here? What are the assumptions, and why do you think they are satisfied? Carry out this test or tests and comment on the results.
+
+
+要检查
+
 
 We want to compare the average values for two populations (with dominant and with non-dominant)  In this case we can use a two-sample t-test, the test assumes that the sampling distribution for the means is approximately Gaussian. 
 ```{r}
@@ -66,13 +77,31 @@ t.test(df1$sp1,df1$sp2)
 ```
 The small p-value implies that we reject the null hypothesis of equal means for speed.
 The speed with the dominant hand is not same as with the non-dominant hand.
+答案  要检查正态分布. 
+应该是pair
+```{r}
+ par(mfrow = c(1,2))
+qqnorm(df1$sp1); qqline(df1$sp1)
+qqnorm(df1$sp2); qqline(df1$sp2)
+shapiro.test(df1$sp1)
+shapiro.test(df1$sp2)
+t.test(df1$sp1, df1$sp2, paired = T, conf.level = 0.98)
+```
 
 (c) (5 points)  Define a new variable named `dif` in the data frame. The value for this variable is the difference between the speed with the dominant hand minus the speed with the non-dominant hand. Do a boxplot of this new variable as a function of `DH`. Comment on the graph.
 ```{r}
 df1 <- within(df1, dif <- sp1 - sp2 )
 boxplot(dif ~ DH,ylim = c(0,0.4) , data = df1,  col = 'cornsilk2')
+abline(h=0, col = 'red')
 ```
 We can find that the dominant hand is left has less mean and less range in difference between the speed with the dominant hand minus the speed with the non-dominant hand. Right dominant hand people has higher mean, and wider range in difference between the speed with the dominant hand minus the speed with the non-dominant hand.
+答案: 
+右边方差更大,  两百年看起来都对称. 
+检查两边的
+方差
+是否对称
+50%, 还是75%. 
+
 
 (d) (10 points)  We now want to test whether the average value for this difference in speed (`dif`) is the same for right-handed and left-handed subjects. What parametric test or tests are adequate here?  What are the assumptions, and why do you think they are satisfied? Carry out this test or tests and comment on the results. 
 
@@ -83,13 +112,16 @@ H0:μd=0 vs.H1 :μd != 0
 Since we have measurements left-hand and right-hand for the same subjects we should do a t test. the test assumes that the sampling distribution for the means is approximately Gaussian. Since the sample sizes are large, 38 and 29 points, the Central Limit Theorem says that this a reasonable assumption.
 
 ```{r}
-str(df1$dif[df1$DH=='right']); str(df1$dif[df1$DH=='left'])
+str(df1$dif[df1$DH=='right']); str(df1$dif[df1$DH=='left']) 
 ```
+数数量可以用sum而不是str
+还是需要qqnorm检查
 ```{r}
 t.test(df1$dif[df1$DH == 'right'],
        df1$dif[df1$DH == 'left'])
 ```
 The p value is just above 0.01 and the decision depends on our choice for α. If we choose 0.05 or 0.02, the null hypothesis is rejected, while if we choose 0.01, we will not reject the null hypothesis.
+
 
 (e) (10 points)  For the problems in (b) and (d), what non-parametric tests can be applied? What are the assumptions for these tests? Why do you think they are satisfied? Carry out these tests and comment on the results.
 

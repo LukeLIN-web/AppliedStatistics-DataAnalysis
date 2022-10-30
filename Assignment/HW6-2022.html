@@ -427,13 +427,15 @@ look in this graphs for constant variance. We see that values in some
 cases appear to be more spread than in others, and this may be a sign of
 non-constant variance. However, we only have a few points and this is
 difficult to determine.</p>
-<p>Use also Levene’s test and Shapiro-Wilk.</p>
+<p>Next, we do the Shapiro-Wilk and Levene tests for the residuals.</p>
 <pre class="r"><code>shapiro.test(resid(mod1))</code></pre>
 <pre><code>## 
 ##  Shapiro-Wilk normality test
 ## 
 ## data:  resid(mod1)
 ## W = 0.94977, p-value = 0.3636</code></pre>
+<p>This shows that at the 5% level (or lower levels) we cannot reject
+the null hypothesis of Gaussianity.</p>
 <pre class="r"><code>library(car)</code></pre>
 <pre><code>## Loading required package: carData</code></pre>
 <pre class="r"><code>leveneTest(mod1)</code></pre>
@@ -441,6 +443,8 @@ difficult to determine.</p>
 ##       Df F value Pr(&gt;F)
 ## group  3  0.2424 0.8655
 ##       16</code></pre>
+<p>This test has a large p-value, saying that hypothesis of
+homoscedasticy is not rejected.</p>
 <p>Use Tukey’s HSD procedure to make pairwise comparisons and comment on
 the results.</p>
 <pre class="r"><code>(mod1.tky = TukeyHSD(mod1))</code></pre>
@@ -541,6 +545,10 @@ shapiro.test(resid(model1))</code></pre>
 ##       Df F value Pr(&gt;F)
 ## group  4  0.3062 0.8704
 ##       20</code></pre>
+<p>Shapiro-Wilk shows that at the 5% level (or lower levels) we cannot
+reject the null hypothesis of Gaussianity. leveneTest shows that has a
+large p-value, saying that hypothesis of homoscedasticy is not
+rejected.</p>
 <p>Use Tukey’s HSD procedure to make pairwise comparisons and comment on
 the results.</p>
 <pre class="r"><code>(model1.tky = TukeyHSD(model1))</code></pre>
