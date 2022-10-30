@@ -1,0 +1,169 @@
+---
+title: "Hw6-2022"
+output: html_document
+date: "2022-10-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question1
+
+The table below has the results of an experiment run to determine the effect of four different oven temperatures on the density of a certain type of ceramics
+
+1. Do a complete analysis of variance for this set. Plot the data. 
+2. Write the equation for the model. 
+
+3. Determine whether the treatments have an effect on the amount of hemoglobin in blood by means of a hypothesis test.
+4. Plot the diagnostic charts and comment on them. Use also Levene’s test and Shapiro-Wilk. Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
+
+```{r}
+density <- c(21.8, 21.9, 21.7, 21.6, 21.7,
+21.5, 21.4, 21.5, 21.4, 21.6,
+21.7, 21.8, 21.8, 21.6, 21.5,
+21.9, 21.7, 21.8, 21.6, 21.7)
+temp <- factor(rep(c(100,125,150,175), each = 5))
+Q1data <- data.frame(temp,density)
+str(Q1data)
+```
+
+From the formula for SST , we can obtain the total sum of squares by finding the differences between the data and the overall mean: 
+```{r}
+sum((density-mean(density))^2)
+``` 
+
+```{r}
+boxplot(density~temp, data = Q1data)
+points(density~temp, data = Q1data, pch=16,col=4)
+```
+```{r}
+mod1 = aov(density~temp, data = Q1data)
+summary(mod1)
+print(mod1$coefficients)
+```
+
+p = 0.0058, alpha = 0.01, p < alpha, reject null hypothesis. We choose alternative that at least two of means are different. The treatments have an effect.
+
+
+2. write the equation
+μˆ + τˆ1 =  2.174000e+01 ;
+μˆ+τˆ2= 2.174000e+01   -2.600000e-01  = 1.914
+μˆ+τˆ3 = 2.174000e+01
+μˆ+τˆ4 = 2.174000e+01
+
+
+
+Plot the diagnostic charts and comment on them. 
+```{r}
+par(mfrow=c(2,2))
+plot(mod1,  cex.lab=0.8, cex.sub=0.8)
+```
+Since we have 5 replications for each treatment level and there are only 5 x-values, the points appear vertically aligned at these values.
+We look in this graphs for constant variance. We see that values in some cases appear to be more spread than in others, and this may be a sign of non-constant variance.
+However, we only have a few points and this is difficult to determine.
+
+Use also Levene’s test and Shapiro-Wilk. 
+```{r}
+shapiro.test(resid(mod1))
+```
+
+
+```{r}
+library(car)
+leveneTest(mod1)
+```
+
+
+
+Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
+```{r}
+(mod1.tky = TukeyHSD(mod1))
+plot(mod1.tky)
+```
+We get a table with six comparisons. we can see the value of difference.
+The 150-100, 175-100, 175-150,150-125 p value higher than 5%, so that they don't have significant difference.  125-100, 175-125 p value is smaller than 1%, they have significant difference.
+
+If the intervals include zero,  then the difference is not significant. so that 125-100, 175-125 have significant difference. 
+
+## Question2
+
+In an experiment to study the effect of fertilizers on the spear elongation in asparagus, four different fertilizers
+and a control group (no fertilizer) were tested and five asparagus spears were measured for each treatment.
+The treatments are coded trmt1, trmt2, trmt3, trmt4, and the control Ctrl. The measurements (length)
+is the length in mm of the asparagus spear. The data is in the file spear.
+
+1. Do a complete analysis of variance for this set. Plot the data. 
+2. Write the equation for the model.  
+3. Determine whether the treatments have an effect of the length of the asparagus spear by means of a hypothesis test.
+4. Plot the diagnostic charts and comment on them. Use also Levene’s test and Shapiro-Wilk. Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
+
+```{r}
+results <- read.table('spear',header=T)
+attach(results)
+str(results)
+results$treat = as.factor(treat)
+```
+
+From the formula for SST , we can obtain the total sum of squares by finding the differences between the data and the overall mean:
+```{r}
+sum((length-mean(length))^2)
+```
+
+
+
+```{r}
+model1 = aov(length~treat)
+summary(model1)
+print(model1$coefficients)
+```
+null hypothesis: the treatment means are not significantly different.
+p is smaller than 0.01, so we can reject the null hypothesis, the treatment means are significantly different.
+
+
+
+
+
+Plot the data. 
+```{r}
+boxplot(length~treat, data = results)
+points(length~treat, data = results, pch=25,col=4)
+```
+
+
+2. write the equation
+μˆ + τˆ1 =  94.14 ;
+μˆ+τˆ2=  94.14+  0.90 = 95.04
+μˆ+τˆ3 = 94.14-3.30=90.84
+μˆ+τˆ4 = 94.14 +   1.42 = 95.56
+μˆ+τˆ5 = 94.14 + 8.36 =112.50
+
+Look at diagnostic plots to check the assumptions of the model.
+```{r}
+plot(model1, which=1, cex.lab=0.8, cex.sub=0.8)
+```
+
+Since we have 5 replications for each treatment level and there are only 5 x-values, the points appear vertically aligned at these values.
+We look in this graphs for constant variance. We see that values in some cases appear to be more spread than in others, and this may be a sign of non-constant variance.
+However, we only have a few points and this is difficult to determine.
+
+
+Use also Levene’s test and Shapiro-Wilk. 
+```{r}
+library(car)
+shapiro.test(resid(model1))
+leveneTest(model1)
+```
+
+
+Use Tukey’s HSD procedure to make pairwise comparisons and comment on the results.
+```{r}
+(model1.tky = TukeyHSD(model1))
+plot(model1.tky)
+```
+We get a table with ten comparisons. we can see the value of difference.
+If we choose alpha = 5%,   The trmt4-Ctrl,trmt4-trmt1,trmt4-trmt2   p value smaller than 5%, so that they have significant difference.  Others don't have  significant difference.
+If we choose alpha = 2%, The trmt4-Ctrl, trmt4-trmt2   p value smaller than 2%,so that they have significant difference.Others don't have  significant difference.
+If we choose alpha = 1%, The trmt4-trmt2   p value smaller than 1%,so that they have significant difference. Others don't have  significant difference.
+
+If the intervals include zero,  then the difference is not significant. From figure we can see that trmt4-Ctrl,trmt4-trmt1,trmt4-trmt2 have significant difference. 

@@ -35,7 +35,6 @@ after one month taking the drug, the patients obviously have better score in tes
 you observe. Do you think the two scores are independent?
 ```{r}
 scatter.smooth(dataset$mem[dataset$type=="before"],dataset$mem[dataset$type=="after"])
-
 ```
 I think the two scores are dependent. Because the polt nearly a straight line.
 答案: 说好听点, 是 linear relation between the scores before and after treatment.This indicates that these variables are correlated.

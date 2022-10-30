@@ -242,8 +242,6 @@ mytable <- xtabs(~Treatment+Improved, data = Arthritis) # 生成列联表
 
 chisq 测出来p 很小 ,  意味着可以拒绝原假设
 
-
-
 #### 非参数检验
 
 卡方检验属于非参数检验，由于非参检验不存在具体参数和总体正态分布的假设，所以有时被称为**自由分布检验**。
@@ -292,9 +290,27 @@ prop.table(q2.tbl,1) # 按行分
 
 是否两个分布是一样的? 用什么检验? 为什么? 应该满足什么条件? 必考. 
 
-Chi-square distribution approximation  要求 至少要5个样本
+Chi-square distribution approximation  要求 至少要5个样本. 需要做验证. 
 
 ### lec9方差分析
+
+基本的idea是decompose.
+
+factors 也经常被叫做 treatments. An-o-va , 全称是 analysis of variance.
+
+anaova, 就是比较多个means, 和多个factors的等级相关.  我们可以分辨多个factors 一起变化的时候的效果. 
+
+比如, 我们有两个level, 第一个level做n1 次实验, 第二个level做n2次实验.  
+
+上面一个bar,就是取平均数, 点, 就是取sum.
+
+SST :  total sum of squres.   不同组的方差
+
+SSE:   error sum of squres.   估计方差. 对平均值的方差之和. 就是组内方差. 不可解释方差, 是SSE. 也叫residual sum of squares
+
+如果treatment没有effct, 那么 SST 就等于SSE .  
+
+如果有, 那么SSE < SST.  如果所有值都等于 treatment 平均值, SSE就是0 . 
 
 ```R
 anova 可以获得一个table 
@@ -304,12 +320,11 @@ Anova model:
 model1 <- aov(Hemo ~ fSulfa, data = q3.df) # aov可以fit一个model,p很小的时候, 就认为是有difference的.
  # Mean responses with standard errors
 (means <- model.tables(model1, 'means', se = TRUE))
-
 ```
 
-SSE   
+   SST和SSE的差叫做  treatment  sum of squares, 叫做SSA.可解释 方差, 就是SSA.
 
-估计方差  . MSE
+有k个level, 有k-1个df. 自由度
 
 Analysis of Variance (Anova)  one -way Anova 包括一些假设
 
@@ -317,6 +332,41 @@ Analysis of Variance (Anova)  one -way Anova 包括一些假设
 
 Anova table是啥
 
+Plot the diagnostic charts and comment on them.
 
+diagnostic就是model1 plot的第一张图. 
 
-应该.
+怎么做 Levene’s test and Shapiro-Wilk. 
+
+写出equation, note anova-pdf中有lm的例子, 但是什么时候是lm拟合? 什么时候不用lm拟合? 
+
+SumSq 就是sum of squre, 
+
+The F value is the ratio MSA/MSE and the last column labeled Pr(>F) is the probability of exceeding the calculated F-value when the null hypothesis is true, i.e. it is the p-value for the F test.
+
+#### Tukey HSD
+
+什么是Tukey’s HSD procedure , 怎么做  pairwise comparisons 
+
+方差分析的3个假设条件是：1、总体服从正态分布，2、个体是相互独立，3、组间方差相等
+
+在PPT V25 
+
+If the result of the F test is to reject the null hypothesis of no treatment effects one is naturally interested in determining where the difference lies. For this, it becomes necessary to compare the individual groups.
+
+```R
+with(Tire, pairwise.t.test(a, b , p.adjust.method= 'bonferroni'))
+tky= TukeyHSD(mod1)
+plot(mod1.tky)
+```
+
+ p value higher than 5%, so that they don't have significant difference. p value is smaller than 1%, they have significant difference.
+
+画图 If the intervals include zero,  then the difference is not significant. 
+
+https://wiki.mbalib.com/wiki/HSD%E6%A3%80%E9%AA%8C%E6%B3%95
+
+```R
+attach, 就不用加frame 的前缀了, 可以直接引用.
+```
+

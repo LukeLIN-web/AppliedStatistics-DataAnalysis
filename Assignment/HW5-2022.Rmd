@@ -14,8 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Question 1 (60 pts)
-
-
 For this question, use again the data set `human` that we used in HW2. Read the file `Human_data.txt` and store this in an object called human. 
 
 (a) The body mass index (BMI) is defined as a person’s weight in kilograms divided by the square of height in meters. Add a column named `bmi` to the data frame with the value of this index for each subject. 
@@ -39,7 +37,7 @@ human <- within(human, bmi.fac <- cut(human$bmi, c(-Inf,20,25,30,Inf),labels = c
 (tab1 = table(human$Gender,human$bmi.fac))
 mosaicplot(tab1[1:2,1:4], col = c('dodgerblue','skyblue1'),main = 'Gender with bmi.fac')
 (human.table <- addmargins(tab1))
-prop.table(tab1)
+prop.table(tab1) # 要用 prop.table(tab1, 1)
 str(tab1)
 
 chisq.test(tab1)
@@ -78,11 +76,7 @@ binom.test(2705,5235,.5,'greater')
 #tab <- matrix(c(7, 5, 14, 19, 3, 2, 17, 6, 12), ncol=3, byrow=TRUE)
 ```
 
-
-
 比较一下 p =0.5 或者 p > 0.5.
-
-
 We use Chi-Squared Test.
 
 H0: In the general, newborn babies are not more likely to be boys than girls.
@@ -90,7 +84,6 @@ H1 : In the general, newborn babies are more likely to be boys than girls.
 p >0.01，accept H0，newborn babies are not more likely to be boys than girls. 
 if we choose p<0.05, newborn babies are more likely to be boys than girls. 
 这是不对的! 
-
 
 (b) In the city of Macondo, out of 3765 babies born, 1905 were boys. Is there evidence that the frequency of boys is different in these two cities? Again, state clearly the statistical procedure that you are using to answer this question. Describe the assumptions that you make. Are they reasonable in this case? Carry out this procedure and discuss your results. 
 ```{r}
@@ -105,9 +98,9 @@ prfs = as.table(tab)
 str(prfs)
 print(prfs)
 chisq.test(prfs)
+
 答案:
 prop.test(c(2705,1905), c(5235,3765))
-
 ```
 The χ2 test can also be used to test for independence of categorical variables in contingency tables.
 We use table to produce the contingency table for these two variables.

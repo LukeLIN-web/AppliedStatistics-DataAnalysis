@@ -32,14 +32,26 @@ Load the data and store it in a data frame named `df1`.
 ```{r}
 df1 = read.csv('motorskills.csv')
 ```
+用str 可以
 (a) (5 points) Draw boxplots for the speed with the dominant hand as a function of `DH` (dominant hand) and also for the speed with the non-dominant hand as a function of `DH`. Use a common scale. Comment on what you observe.
 ```{r}
+# 答案用 par(mfrow=c(1,2))
 boxplot(sp1 ~ DH,ylim = c(0,0.8) , data = df1,  col = 'cornsilk2')
 boxplot(sp2 ~ DH,  ylim = c(0,0.8) , data = df1,  col = 'cornsilk2')
 ```
 
 I set the same y scales in both graphs.  The first boxplot shows the speed with the right dominant hand has higher mean, and wider range. The second boxplot shows the speed with the non-dominant hand, if the right hand is dominant hand, has lower mean. 
 Compare two boxplots, we can find that the speed with the non-dominant hand has lower mean than the speed with the dominant hand. 
+答案:
+The first boxplot (dominant hand) shows that right-handed subjects achieved a higher median speed and
+have a wider range of values than left-handed subjects. Particularly, about 50% of right-handed subjects
+achieved speeds of 0.5 or more while less than 25% of left-handed subjects achieved this range of values.
+
+The second boxplot shows similar distributions for both groups, with left-handed subjects having a slightly
+higher median speed. Also, values for the non-dominant hand (second plot) are lower than for the dominant
+hand (first plot).
+
+
 
 (b) (10 points)  We want to explore if the speed with the dominant hand is the same as with the non-dominant hand. What parametric test or tests are appropriate here? What are the assumptions, and why do you think they are satisfied? Carry out this test or tests and comment on the results.
 
