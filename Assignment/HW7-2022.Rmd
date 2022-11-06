@@ -1,0 +1,155 @@
+---
+title: "Hw7-2022"
+output: html_document
+date: "2022-11-5"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question1
+
+For this question use the dataset data1. 
+
+This dataset has information on fuel efficiency, measured in miles per gallon, and seven other variables for 80 different car models. There are two variables related to fuel efficiency, City.Mpg and Highway.Mpg. We will only consider City.Mpg, and we will work with the reciprocal of this variable, 1/City.Mpg, which we will call City.fc for fuel consumption. We want to explore the relation between City.fc and the car’s weight(Weight).
+
+(i) Read the data and define a new variable called City.fc in the data frame equal to the reciprocal of City.Mpg. 
+Draw a scatterplot of City.fc as a function of Weight. 
+Fit a simple linear regression for City.fc as a function of Weight and add the line to the plot. 
+Comment. Obtain a summary of the regression and comment.
+```{r}
+library(car)
+City <- read.table('data1.txt',header=T)
+City <- within(City, City.fc <- 1/City.Mpg)
+scatterplot(City.fc~Weight, data=City)
+modela = lm(City.fc ~ Weight,data = City)
+abline(modela)
+```
+This plot produces a local smoother curve (broken line) that can be compared with the regression line.
+Important discrepancies may indicate that the linear regression model may not be adequate. In this case the agreement is good.
+
+```{r}
+summary(modela)
+```
+Th estimated standard deviation is  0.0048 and the R^2 is  0.8435$.
+
+
+(ii) Draw the diagnostic plots. Do you identify any point as an outlier? If you do, which point is this? Can you identify this point in the initial scatterplot? Can you find a reason why this point is different from the rest?
+```{r}
+par(mfrow=c(2,2))
+plot(modela)
+par(mfrow=c(1,1))
+```
+We can easily find that 40,80,3 is the outlier. 
+
+(iii) Fit a new regression model excluding the outlier(s) you identified in the previous section. Draw a scatterplot with both regression lines. 
+```{r}
+myData <- City[-c(40,80,3), ]
+modelb = lm(City.fc ~ Weight,data = myData)
+scatterplot(City.fc~Weight, data=myData)
+```
+Compare the summary tables.
+```{r}
+summary(modelb)
+```
+Th estimated standard deviation is  0.0035, less than previous section. and the R^2 is  0.9049, higher than previous section.
+ 
+ 
+ Draw the diagnostic plots and comment.
+```{r}
+par(mfrow=c(2,2))
+plot(modelb)
+par(mfrow=c(1,1))
+```
+
+The quantile plot is better than previous section, there are no doubts about normality.
+
+
+
+(iv) Run the Shapiro-Wilk test on the residuals for both models and compare the results.
+```{r}
+shapiro.test(rstandard(modela))
+shapiro.test(rstandard(modelb))
+```
+For previous model, p value is small, so we can reject the hypothesis of normality.
+For modelb, p-value for this test is large, so we cannot reject the hypothesis of normality.
+
+
+## Question2
+
+For this question use the data set data2.
+The data for this question come from an experiment to determine the relationship between the volume of a gas and the pressure. The file has two variables, Height and Pressure. Height corresponds to the height of a cylindrical container with a fixed circular base and a movable top that allows changing the volume of the container. Height was measured in inches. Pressure is measured in inches of mercury as in a barometer. We want to study the relationship between these two variables.
+
+(i) Read data2 and plot Pressure as a function of Height. Fit a simple linear regression for Pressure as a function of Height and add the regression line to the plot. Comment. 
+```{r}
+library(car)
+data2 <- read.table('data2.txt',header=T)
+plot(Pressure~Height,data=data2)
+model1 = lm(Pressure~Height,data = data2)
+abline(model1)
+```
+The regression line is not match the points.
+Obtain a summary for the regression 
+```{r}
+summary(model1)
+```
+Th estimated standard deviation is 9.228, very big.  And the R^2 is  0.88$.
+
+draw the diagnostic plots. Comment on the results
+```{r}
+par(mfrow=c(2,2))
+plot(model1)
+par(mfrow=c(1,1))
+```
+In this case some of the diagnostic plots have issues. In residuals against fitted values, the majority of the residuals are negative, the red line is far from 0 and is not horizontal. The quantile plot is low. 
+The residuals vs leverage plot has somes points with large value for leverage and high residual. This would not be an acceptable model.
+
+
+
+(ii) Use the function boxcox on the MASS package with the argument set to the model you fitted in (i). If the maximum value in the graph is close to an integer value, use this integer as the exponent in a power transformation for Pressure, i.e., if P is the Pressure variable in the dataset, the new variable TP is given by
+TP = P^i
+where i is the integer obtained from the boxcox function. Fit a new model for the transformed pressure as a function of Height. Obtain a summary of the new regression and compare it with the previous one. Draw the diagnostic plots and compare them with the earlier results.
+```{r}
+library(MASS)
+boxcox(model1)
+```
+So we choose i = -1
+TP = P^-1
+
+```{r}
+data2$TP = (data2$Pressure)^-1
+plot(TP~Height,data=data2)
+model2 = lm(TP~Height,data = data2)
+abline(model2)
+```
+We can see this plot is very fit.The regression line is match the points.
+
+Obtain a summary for the regression 
+```{r}
+summary(model2)
+```
+
+Th estimated standard deviation is 0.0001138, very small, on the contrary, the previous one is very big.  and the R^2 is  0.9998$.
+
+```{r}
+par(mfrow=c(2,2))
+plot(model2)
+par(mfrow=c(1,1))
+```
+
+In this case some of the diagnostic plots have improved. In residuals against fitted values, the residuals are much smaller than previous section, the red line is close 0. 
+
+
+(iii) If in the model you fitted in (ii), the p-value for the intercept is large, fit a model without intercept by adding + 0 at the end of the regression equation in the call to the lm function. Use this model to write down an equation for the relation between pressure and volume for a gas. What would be the predicted Pressure for a point with Height = 32? 
+
+Pressure =  1.6458 * Height ,  
+1.6458* 32 = 52.6656 
+Draw a scatterplot of Pressure against Height and add the regression line for the first model and the curve you obtained with the second regression.
+
+```{r}
+model3 = lm(Pressure~Height+0,data = data2)
+summary(model3)
+scatterplot(Pressure~Height, data = data2)
+abline(model2)
+```

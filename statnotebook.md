@@ -1,12 +1,6 @@
 ## AppliedStatistics-DataAnalysis
 
-每周写作业， 还要讨论4-5个问题。 meeting。  markdown， 上传 pdf和code. exam based on R。  开卷 ，两次考试。   project，  4-5个学生。  10月27日proposal，  11月26日 report， 12月4-8日 展示。 
-
-第一场考试将于 10 月 22 日星期六上午 9:00 至中午 12:00 您必须带上电脑，别忘了带上充电器。您可以使用我们在课堂上解决的笔记、演示文稿、书籍和练习
-
-考试将在上午 9:00 在 Blackboard 上的作业/考试下发布，您必须在中午 12:00 通过 Blackboard 提交您的解决方案。您必须提交两份文件，一份包含您的答案的 pdf 和一份包含 R 代码的脚本。该脚本可以是一个 Rmarkdown 文件。确保脚本运行并产生所需的结果。
-
-考试涵盖视频 24，实验设计 1。请记住，仅靠代码不是问题的答案。您对获得的结果的评论和讨论您选择的程序是您回答的基础。 
+每周写作业， 还要讨论4-5个问题。 meeting。  markdown， 上传 pdf和code. exam based on R。  开卷 ，两次考试。   project，  4-5个学生。   11月26日 report， 12月4-8日 展示。 
 
 ### 第一节课
 
@@ -346,8 +340,6 @@ This test has a large p-value, saying that hypothesis of homoscedasticy is not r
 
 #### Shapiro-Wilk. 
 
-
-
 `shapiro.test(df1$sp1)` 就是检查是不是正态分布, 做t-test之前要检查!也可以同时做一个qqnorm qqline检查.    `shapiro.test(resid(mod1)) `如果p比0.05大, 那么 This shows that at the 5% level (or lower levels) we cannot reject the null hypothesis of Gaussianity.
 
 写出equation, note anova-pdf中有lm的例子, 但是什么时候是lm拟合? 什么时候不用lm拟合? 
@@ -382,3 +374,92 @@ https://wiki.mbalib.com/wiki/HSD%E6%A3%80%E9%AA%8C%E6%B3%95
 attach, 就不用加frame 的前缀了, 可以直接引用.
 ```
 
+
+
+confidence band for 回归线
+
+predict()
+
+```R
+predict(mode,new.data,interval='p')
+abline(lm1) 
+```
+
+Summary,  一个p value会显示在Fstatic , anova, 就是显示. 
+
+SST = SSE  +SSR  , 
+
+determination 系数, R^2,  = SSR/SST
+
+
+
+V32 简单线性模型6
+
+influential and atypical points
+
+
+
+#### Draw the diagnostic plots.
+
+```R
+par(mfrow=c(2,2))
+plot(modela)
+```
+
+评论
+
+In general, the plots look good. The quantile plot is partivularly good, so there are no doubts about normality. The only point that may raise cause for concern is the assumption of homoscedasticity, since the scale-location lot shows a small increasing tendency. We can check this with a test.
+
+##### 如果不好
+
+In this case all the diagnostic plots have issues. In residuals against fitted values, the majority of the residuals are negative, the red line is far from 0 and is not horizontal, and the residuals are not homogeneously spread in the plot. The quantile plot has some very large values on the right tail. The scale-location plot shows an increasing pattern for the dispersion of the data and the residuals vs leverage plot has one point with a very large value for leverage and high residual. This would not be an acceptable model.
+
+在这种情况下，所有的诊断图都有问题。在残差与拟合值的对比中，大部分的残差
+是负的，红线离0很远，而且不是水平的，残差在图中的分布也不均匀。QQ图的右尾部有一些非常大的数值。标度-位置图显示了数据的分散性在增加。
+残差与杠杆的关系图有一个点的杠杆值非常大，而残差却很高。这将不是一个可接受的模型。
+
+#### summary
+
+estimated standard deviation越小, 说明fit的越好. Multiple R-squared.可以读出来. 
+
+#### problemlist8
+
+```R
+scatterplot(City.fc~Weight, data=City) 需要 car库.
+abline(modela) # 就是增加这个模型的线.
+```
+
+该图产生一个局部的平滑曲线（断线），可以与回归线进行比较。
+重要的差异可能表明，线性回归模型可能不充分。在这种情况下 吻合度很高。
+
+
+
+Write down the equation for the regression line and interpret the parameters
+
+summary出来, 看  ( estimate std 这一列)  ,   y =  sepal.length x - intercept
+
+6. Do the diagnostic plots for this model and comment   normal性质 好或者不好 .   
+
+
+
+8  nvcTEst,  p 很大, 就不能拒绝 homogeneity of variances.  p 小, 就拒绝 homogeneity of variances
+
+
+
+##### exercise2 
+
+Can you write down the equation for your model
+
+
+
+##### exercise4
+
+summary , p 很小, 拒绝假设, 两个参数和0不同.
+
+confint, 
+
+可以看一下是怎么分析Draw diagnostic plots and discuss the results.的
+
+#### boxcox
+
+Box-Cox变换是一个变换系列，试图纠正数据的非正态性。 该图显示了参数λ的对数似然。和一个大约95%的置信区间。通常情况下，如果这个置信区间包括零，我们应该试着进行对数变换，也就是λ=0时的变换。
