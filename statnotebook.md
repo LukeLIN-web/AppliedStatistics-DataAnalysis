@@ -1,6 +1,6 @@
 ## AppliedStatistics-DataAnalysis
 
-每周写作业， 还要讨论4-5个问题。 meeting。  markdown， 上传 pdf和code. exam based on R。  开卷 ，两次考试。   project，  4-5个学生。   11月26日 report， 12月4-8日 展示。 
+每周写作业， 还要讨论4-5个问题. 作业上传 pdf和code. exam based on R。  开卷 ，两次考试。   project，  4-5个学生。   11月26日 report， 12月4-8日 展示。 
 
 ### 第一节课
 
@@ -42,7 +42,7 @@ lapply(l,myFun)
 
 我花了非常多的时间去找怎么append, append不进去很难受.
 
-  results <- append(results, abs(I - result)) 太抽象了这玩意, 这个赋值和append要同时用.
+  `results <- append(results, abs(I - result)) `太抽象了这玩意, 这个赋值和append要同时用. 
 
 ##### list
 
@@ -65,9 +65,7 @@ mode(list1[[2]]) 这样是数字, mode(list1[2])是list .https://blog.51cto.com/
 
 [] extracts a list, [[]] extracts elements within the list.
 
-### lec3
-
-graph in R
+### lec3 graph in R
 
 ```R
 boxplot
@@ -102,11 +100,9 @@ P(X <=z) = q
 
 如果x不变,  Fx突变的话,  可能就没有z满足F(z) = q . 
 
-qqplot
-
 #### Quantiles plots 
 
-用来比较一个dataset和分布的.
+`qqplot` ,用来比较一个dataset和分布的.
 
 如果两个分布属于同一个location and scale family, 那么graph 大约是一条直线. 
 
@@ -115,8 +111,7 @@ qqplot
 data frame 用$来取列而不是用dot
 
 ```R
-newdata <- subset(mydata, age >= 20 | age < 10,
-select=c(ID, Weight))
+newdata <- subset(mydata, age >= 20 | age < 10,select=c(ID, Weight))
 ```
 
 #### apply
@@ -274,9 +269,7 @@ q2.df$origin <- factor(q2.df$origin, labels = c('Am','Eu','Jap'))# 可以重命�
 
 怎么求比例?
 
-Build a table with the proportions with respect to the total number of cases for each gender
-
-reating proportion tables. 
+Build a table with the proportions with respect to the total number of cases for each gender.  reating proportion tables. 
 
 ```R
 prop.table(q2.tbl,1) # 按行分
@@ -320,31 +313,65 @@ model1 <- aov(Hemo ~ fSulfa, data = q3.df) # aov可以fit一个model,p很小的�
 
 有k个level, 有k-1个df. 自由度
 
-
-
 Analysis of Variance (Anova)  one -way Anova 包括一些假设
 
 估计方差, 来自 anova table ,deviation 一个个开根号.
 
-Anova table是啥
+#### diagnostic plots
 
-Plot the diagnostic charts and comment on them.
+Plot the diagnostic charts and comment on them.  diagnostic是四张图. 
 
-diagnostic就是model1 plot的第一张图. 
+```r
+par(mfrow=c(2,2))
+plot(model5)
+par(mfrow=c(1,1)) # 是为了不影响后面, 后面不会变成4张图. 
+```
+
+可以看一下是怎么分析Draw diagnostic plots and discuss the results.的
+
+评论
+
+In general, the plots look good. The quantile plot is partivularly good, so there are no doubts about normality. The only point that may raise cause for concern is the assumption of homoscedasticity, since the scale-location lot shows a small increasing tendency. We can check this with a test.
+
+Do the diagnostic plots for this model and comment   normal性质 好或者不好 .  
+
+##### 如果不好
+
+In this case all the diagnostic plots have issues. In residuals against fitted values, the majority of the residuals are negative, the red line is far from 0 and is not horizontal, and the residuals are not homogeneously spread in the plot. 
+
+The quantile plot has some very large values on the right tail. 
+
+The scale-location plot shows an increasing pattern for the dispersion of the data The residuals vs leverage plot has one point with a very large value for leverage and high residual. This would not be an acceptable model. 要学会怎么用英语答题. 
+
+所有的诊断图都有问题。在残差与拟合值的对比中，大部分的残差
+是负的，红线离0很远，而且不是水平的，残差在图中的分布也不均匀。QQ图的右尾部有一些非常大的数值。标度-位置图显示了数据的分散性在增加。
+残差与杠杆的关系图有一个点的杠杆值非常大，而残差却很高。这将不是一个可接受的模型。
+
+##### 如果改进了
+
+All the plots have improved considerably.
 
 #### Levene’s test
 
-`library(car) leveneTest(model1)`
+`library(car) 然后可以使用leveneTest(model1)`
 
 This test has a large p-value, saying that hypothesis of homoscedasticy is not rejected.  **异质变异数**（英语：Heteroscedasticity），又称**分散不均一性**，指的是一系列的[随机变量](https://zh.m.wikipedia.org/wiki/随机变量)间的方差不相同，相对于同质变异数（Homoscedasticity）。 
 
-#### Shapiro-Wilk. 
+#### 方差uniform
 
-`shapiro.test(df1$sp1)` 就是检查是不是正态分布, 做t-test之前要检查!也可以同时做一个qqnorm qqline检查.    `shapiro.test(resid(mod1)) `如果p比0.05大, 那么 This shows that at the 5% level (or lower levels) we cannot reject the null hypothesis of Gaussianity.
+The assumption of uniform variance is not so clear from the plots, particularly from the Scale-Location graph. The test we used for analysis of variance does not work here, because we do not have grouped data. A test that can be used in this situation is the Score Test
+
+```{r}
+ncvTest(model4)
+```
+
+#### Shapiro-Wilk
+
+`shapiro.test(df1$sp1)` 检查是不是正态分布, 做t-test之前要检查!  也可以同时做一个qqnorm qqline检查.    `shapiro.test(resid(mod1)) `如果p比0.05大, 那么 This shows that at the 5% level (or lower levels) we cannot reject the null hypothesis of Gaussianity.
 
 写出equation, note anova-pdf中有lm的例子, 但是什么时候是lm拟合? 什么时候不用lm拟合? 
 
-SumSq 就是sum of squre, 
+SumSq 就是sum of squre
 
 The F value is the ratio MSA/MSE and the last column labeled Pr(>F) is the probability of exceeding the calculated F-value when the null hypothesis is true, i.e. it is the p-value for the F test.
 
@@ -374,83 +401,52 @@ https://wiki.mbalib.com/wiki/HSD%E6%A3%80%E9%AA%8C%E6%B3%95
 attach, 就不用加frame 的前缀了, 可以直接引用.
 ```
 
-
-
 confidence band for 回归线
-
-predict()
 
 ```R
 predict(mode,new.data,interval='p')
 abline(lm1) 
 ```
 
-Summary,  一个p value会显示在Fstatic , anova, 就是显示. 
+ anova, 就是显示. 
 
 SST = SSE  +SSR  , 
 
 determination 系数, R^2,  = SSR/SST
 
-
-
-V32 简单线性模型6
+### V32 简单线性模型6
 
 influential and atypical points
 
-
-
-#### Draw the diagnostic plots.
-
-```R
-par(mfrow=c(2,2))
-plot(modela)
-```
-
-评论
-
-In general, the plots look good. The quantile plot is partivularly good, so there are no doubts about normality. The only point that may raise cause for concern is the assumption of homoscedasticity, since the scale-location lot shows a small increasing tendency. We can check this with a test.
-
-##### 如果不好
-
-In this case all the diagnostic plots have issues. In residuals against fitted values, the majority of the residuals are negative, the red line is far from 0 and is not horizontal, and the residuals are not homogeneously spread in the plot. The quantile plot has some very large values on the right tail. The scale-location plot shows an increasing pattern for the dispersion of the data and the residuals vs leverage plot has one point with a very large value for leverage and high residual. This would not be an acceptable model.
-
-在这种情况下，所有的诊断图都有问题。在残差与拟合值的对比中，大部分的残差
-是负的，红线离0很远，而且不是水平的，残差在图中的分布也不均匀。QQ图的右尾部有一些非常大的数值。标度-位置图显示了数据的分散性在增加。
-残差与杠杆的关系图有一个点的杠杆值非常大，而残差却很高。这将不是一个可接受的模型。
-
 #### summary
 
-estimated standard deviation越小, 说明fit的越好. Multiple R-squared.可以读出来. 
+estimated standard deviation越小, 说明fit的越好. 
+
+Multiple R-squared.多重 R 平方也称为决定系数，这是经常被引用的衡量模型与数据拟合程度的指标, 可以读出来. 
+
+**Residuals**：模型预测的值与 y 的实际值之间的差异
+
+一个p value会显示在Fstatic , 最后是 F 统计量。包括 t 检验，这是汇总函数为 lm 模型生成的第二个“检验”。F 统计量是一种“全局”测试，用于检查您的系数中是否至少有一个非零。
 
 #### problemlist8
 
 ```R
 scatterplot(City.fc~Weight, data=City) 需要 car库.
-abline(modela) # 就是增加这个模型的线.
+abline(modela) # 就是增加这个模型的线
 ```
 
 该图产生一个局部的平滑曲线（断线），可以与回归线进行比较。
 重要的差异可能表明，线性回归模型可能不充分。在这种情况下 吻合度很高。
 
-
-
 Write down the equation for the regression line and interpret the parameters
 
-summary出来, 看  ( estimate std 这一列)  ,   y =  sepal.length x - intercept
+summary出来, 看  ( estimate std 这一列)  ,   y =  sepal.length x - intercept 
 
-6. Do the diagnostic plots for this model and comment   normal性质 好或者不好 .   
-
-
-
-8  nvcTEst,  p 很大, 就不能拒绝 homogeneity of variances.  p 小, 就拒绝 homogeneity of variances
-
-
+6. nvcTEst,  p 很大, 就不能拒绝 homogeneity of variances.  p 小, 就拒绝 homogeneity of variances
 
 ##### exercise2 
 
-Can you write down the equation for your model
-
-
+Can you write down the equation for your mode
 
 ##### exercise4
 
@@ -458,8 +454,99 @@ summary , p 很小, 拒绝假设, 两个参数和0不同.
 
 confint, 
 
-可以看一下是怎么分析Draw diagnostic plots and discuss the results.的
+
 
 #### boxcox
 
 Box-Cox变换是一个变换系列，试图纠正数据的非正态性。 该图显示了参数λ的对数似然。和一个大约95%的置信区间。通常情况下，如果这个置信区间包括零，我们应该试着进行对数变换，也就是λ=0时的变换。
+
+### lec14
+
+```
+获得一个hat matrix,regressors hp and wt
+model.matrix
+nrow
+ncol
+diag
+sum(hii)可以
+rstandards
+```
+
+#### test on individual parameters
+
+假设 参数的显著性.
+
+#### properties of residuals
+
+reduced model,  图很像, 看起来不错. 
+
+### V35 multiplereg3
+
+[多重线性回归](https://www.zhihu.com/search?q=多重线性回归&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A"1677930134"})是研究一个因变量和多个自变量的关系
+
+变量回归中的p, 当回归中的 p 值大于显着性水平时，表明您的样本中没有足够的证据得出存在非零相关性的结论。
+
+#### Backward Elimination
+
+αcrit is sometimes referred to as the ‘p-to-remove’ and is typically set to 15 or 20%.
+
+#### mean square prediction error
+
+#### elimination
+
+#### Backward elimination
+
+每次选最大p的去掉, 慢慢减掉一些变量, 直到所有的p都小于0.01
+
+`round(drop1(lm()))`
+
+慢慢去掉AIC最小的.直到所有的AIC都比none大.  AIC是啥? 
+
+#### problemlist
+
+第一题, leverage 的x太长, 去掉intercept可以变短.  只要standard  residuals不大就不会影响. 
+
+ +0 就是截距设置为0.
+
+怎么获得scatter plot matrices
+
+```R
+pairs(iris[,1:4], pch = 19)
+```
+
+怎么获得 graphical representation of the correlation matrix. Comment on your results?
+
+```R
+corrplot.mixed(cor.ex4)#可以看图的correlation matrix
+#round(res, 2)可以看数字的correlation matrix
+```
+
+What is the p-value for the overall significance test for the regression?
+
+
+
+怎么预测predict? Predict the `res` value for a subject with covariates `(var1,var2,var3,var4,var5) = (65,100,50,0.02,3)`. Add a confidence interval at level 98%.
+
+```{r}
+a = data.frame(var1=65,var2=100,var3=50,var4=0.02,var5=3)
+result = predict(model1,a,level=0.98)
+```
+
+```
+ could not find function "scatterplotMatrix"是为什么?
+```
+
+#### residualPlots
+
+问题: Add a quadratic term to the initial regression model. Print the summary table, and interpret the results. 
+
+A useful tool is the function residualPlots in the car package. This function plots residuals against all the regressors and also against fitted values, and adds a quadratic term. It also tests the significance of the added term and lists the p-values. In thie case, the quadratic term for carats has a small p-value.
+
+
+
+画曲线要用curve
+
+```
+curve(21.862962 + 1.849283*x + 0.051399*x^2, add=T, col='blue')
+```
+

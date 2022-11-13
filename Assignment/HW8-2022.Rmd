@@ -1,0 +1,149 @@
+---
+title:    |
+  | STAT 210
+  | Applied Statistics and Data Analysis: 
+  | Homework 8
+author: 
+date: "Due on Nov. 13/2022"
+output: html_document
+---
+
+## Question 1
+For this question we will use the data set `dataB` which has a response variable `res` and five covariates. 
+(i) Do a exploratory analysis of this data set, including a scatterplot matrix and a graphical representation of the correlation matrix. Comment on your results.
+```{r}
+library(ISwR) 
+library(corrplot)
+dataB <- read.table('dataB',header=T)
+pairs(dataB[,1:5],pch=19, lower.panel=NULL)
+res <- cor(dataB)
+corrplot.mixed(res)
+```
+
+We can find that  var5~res has largest correlation. var1 has small correlation with others.
+(ii) Fit a complete model for `res` including all the other variables. Produce a summary table and interpret the t tests in the table. What is the p-value for the overall significance test for the regression?
+```{r}
+model1 <- lm(res ~ var1 + var2 + var3 +var4+var5  , data = dataB)
+summary(model1)
+```
+
+p-value: < 2.2e-16, so there is significant difference.
+
+(iii) Starting with the model fitted in section (ii), fit a minimal model using a backwards selection procedure with a critical $\alpha$ of  0.15. 
+
+first we select var3 for elimination.
+```{r}
+model2 <- lm(res ~ var1 + var2 +var4+var5  , data = dataB)
+summary(model2)
+```
+
+secondly, we select Intercept for elimination.
+```{r}
+model2 <- lm(res ~ var1 + var2 +var4+ var5+0  , data = dataB)
+summary(model2)
+```
+now all p < 0.15.
+
+(iv) Plot the standard diagnostic graphs for the model that you selected and comment on what you observe.
+```{r}
+par(mfrow=c(2,2))
+plot(model2)
+par(mfrow=c(1,1))
+```
+We can easily find that 20,11,2 is the outlier. 
+
+
+(v) Predict the `res` value for a subject with covariates `(var1,var2,var3,var4,var5) = (65,100,50,0.02,3)`. Add a confidence interval at level 98%.
+
+```{r}
+a = data.frame(var1=65,var2=100,var3=50,var4=0.02,var5=3)
+result = predict(model1,a,level=0.98)
+print(result)
+```
+res = 234.623 
+
+(vi) Print an anova table for the final model and find the estimated variance of the errors. Describe explicitly the sampling distribution for the estimated parameters.
+
+```{r}
+anova(model2) 
+```
+In ANOVA output with "Mean Sq" column.
+## Question 2 
+The file `dataC` has information on two variables, `yvar` and `xvar`. We want to build a regression model for `yvar` as a function of `xvar`.
+
+(i) Fit a simple regression model for `yvar` in terms of `xvar`. Print the summary table and comment on the results. Draw a scatterplot and add the regression line. Comment.
+```{r}
+library(car)
+dataC <- read.table('dataC',header=T)
+model4 = lm(yvar~xvar,data=dataC) 
+summary(model4)
+scatterplot(yvar~xvar, data=dataC)
+abline(model4)
+```
+
+we can see the regression line perfect fit most of points.
+
+(ii) State clearly the assumptions on which the model is based and, using the standard diagnostic plots and any tests that are necessary, verify if these assumptions are valid in this case.
+
+Assumptions: 
+```{r}
+par(mfrow=c(2,2))
+plot(model4)
+par(mfrow=c(1,1))
+```
+In this case, the diagnostic plots give sufficient information about the normality assumption. However, if we wanted to test this assumption, we could use the Shapiro-Wilk test. 
+```{r}
+shapiro.test(rstandard(model4))
+```
+The p-value for this test is large, so we cannot reject the hypothesis of normality.
+
+The assumption of uniform variance is not so clear from the plots, particularly from the Scale-Location graph. The test we used for analysis of variance does not work here, because we do not have grouped data. A test that can be used in this situation is the Score Test 
+```{r}
+ncvTest(model4)
+```
+The p-value for this test is large, so we cannot reject the hypothesis of homogeneous variance.
+
+
+(iii) Use the function `residualPlots` in the package `car`. This function was introduced in problem 2 of Problem List 8. The result of applying this function is twofold. On the one hand, graphs of residuals against fitted values and regressors are plotted, including (in blue) a quadratic term, and on the other hand, a couple of tests are performed and printed in the console. The first one tests whether a quadratic term in the regressor variable would be significant. Interpret the result you obtain.
+```{r}
+residualPlots(model4)
+```
+The quadratic line corresponds to fitting a quadratic terms and the p-values appear below correspond to a test on the significance of this term. The graphs show, again, that the fit is not good.
+
+(iv) Add a quadratic term to the initial regression model. Print the summary table, and interpret the results. Draw the diagnostic plots and comment on them. 
+```{r}
+model5 <- update(model4, ~. + I(xvar^2)) 
+summary(model5)
+```
+In the new model, all terms are significant. The R^2 has increased form 0.995 to 0.9993
+
+To calculate the AIC we use the function stepAIC
+```{r}
+library(MASS)
+stepAIC(model5)
+```
+
+The first model has an AIC of 67.966, and adding the quadratic term has reduced it to 64.2.
+
+We plot the diagnostic graphs
+```{r}
+par(mfrow=c(2,2))
+plot(model5)
+par(mfrow=c(1,1))
+```
+All the plots have improved considerably. 
+The quantile plot is particularly good, the line is more like a straight line.  so there are no doubts about normality. 
+In residuals against fitted values, the red line is closer from 0.
+
+(v) Write an equation for the final model. Do a scatter plot and add the initial regression line and the curve for the quadratic model that you fitted in (iv).
+
+The equation for this model is
+yvar = 21.8630 +  1.8493 ∗ xvar  +0.0514 ∗ xvar^2
+
+```{r}
+plot(yvar~xvar, data=dataC)
+abline(model4)
+curve(21.8630 + 1.8493*x + 0.0514*x^2, add=T, col='red')
+```
+We could find that curve is more fit the points.
+
