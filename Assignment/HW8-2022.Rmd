@@ -57,7 +57,7 @@ We can easily find that 20,11,2 is the outlier.
 
 ```{r}
 a = data.frame(var1=65,var2=100,var3=50,var4=0.02,var5=3)
-result = predict(model1,a,level=0.98)
+result = predict.lm(model1,a,level=0.98)
 print(result)
 ```
 res = 234.623 
@@ -68,6 +68,10 @@ res = 234.623
 anova(model2) 
 ```
 In ANOVA output with "Mean Sq" column.
+
+The sampling distribution follows, F distribution.   This distribution is a type of probability distribution.
+
+
 ## Question 2 
 The file `dataC` has information on two variables, `yvar` and `xvar`. We want to build a regression model for `yvar` as a function of `xvar`.
 
