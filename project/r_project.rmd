@@ -1,0 +1,137 @@
+---
+title: "R_Project"
+author: "Rayan Rozi"
+date: "2022-10-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+sales = read.csv("dataset.csv")
+```
+
+```{r}
+sales$User_Score = as.numeric(sales$User_Score)
+str(sales)
+
+```
+
+```{r}
+sales_clean = subset(sales, !is.na(User_Score) & !is.na(Critic_Score))
+
+#sales_clean = sales_clean[sample(nrow(sales_clean), 100), ]
+
+str(sales_clean)
+
+
+```
+
+```{r}
+scores_user = sales_clean$User_Score*10
+scores_critic = sales_clean$Critic_Score
+```
+
+```{r}
+summary(scores_user)
+summary(scores_critic)
+#var()
+t.test(scores_user,scores_critic)
+wilcox.test(scores_user,scores_critic)
+boxplot(scores_user,scores_critic)
+```
+
+```{r}
+hist(scores_user,ylim = c(0,1500),xlim = c(0,100))
+hist(scores_critic,ylim = c(0,1500),xlim = c(0,100))
+```
+
+```{r}
+cor.test(scores_user,scores_critic,method = "pearson")
+cor.test(scores_user,scores_critic,method = "kendall")
+```
+
+```{r}
+ordered_user = scores_user[order(scores_user)]
+ordered_critic = scores_critic[order(scores_user)]
+plot(ordered_user,ylim = c(0,100))
+plot(ordered_critic,ylim = c(0,100))
+
+```
+
+```{r}
+plot(scores_user,scores_critic,pch=19)
+abline(a=0, b=1)
+```
+
+quantile plots, beta gamma family dists
+
+```{r}
+qqnorm(scores_user,pch=19)
+qqline(scores_user)
+qqnorm(scores_critic,pch=19)
+qqline(scores_critic)
+```
+
+```{r}
+sales_clean_platforms = sales_clean
+sales_clean_platforms$Platform = as.factor(sales_clean$Platform)
+```
+
+```{r}
+library("ggpubr")
+```
+
+sales_clean_platforms\$User_Score \~ sales_clean_platforms\$Platform))
+
+```{r}
+plot(aov(sales_clean_platforms$User_Score ~ sales_clean_platforms$Platform))
+```
+
+```{r}
+tapply(scores_critic,sales_clean_platforms$Platform, mean)
+```
+
+```{r}
+bigdf = as.data.frame(cbind(scores_critic,scores_user))
+```
+
+```{r}
+library("gridExtra")
+p = ggplot(bigdf,aes(x=scores_critic,y=scores_user)) +
+  ggtitle("Plot of 100K Point Dataset") +
+  xlab("x1") +
+  ylab("x2") 
+p1 = p + 
+  geom_point(alpha = 0.01, colour="orange") + 
+  geom_density2d() + 
+  theme_bw()
+p2 = p +
+  stat_bin_hex(colour="white", na.rm=TRUE) +
+  scale_fill_gradientn(colours=c("purple","green"), 
+                       name = "Frequency", 
+                       na.value=NA)
+p2
+```
+
+goodness of fit tests kormogolov
+
+```{r}
+sales_clean = subset(sales, !is.na(User_Score) & !is.na(Critic_Score))
+model.gg = lm(User_Score ~ Critic_Score,data = sales_clean)
+summary(model.gg)
+```
+
+```{r}
+plot(User_Score ~ Critic_Score,data = sales_clean,pch=19)
+abline(model.gg, col = "red")
+```
+
+```{r}
+model.gg2 = lm(User_Score ~ Critic_Score + Genre,data = sales_clean)
+summary(model.gg2)
+```

@@ -12,21 +12,21 @@ You are required to select a data set for which the methods covered during the c
 
 The proposal should include: (1) description of the dataset; 
 
-
-
 (2) the scientific goals, specific hypotheses; 
 
-
-
 (3) preliminary plots,
-
-
-
-
 
  (4) plan for analysis and modeling.
 
 
 
 
+
+可以做很多模型, 
+
+11月30日 final report.
+
+User scores~ 
+
+Category add up. 
 

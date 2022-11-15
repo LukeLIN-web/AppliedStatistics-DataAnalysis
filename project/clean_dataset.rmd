@@ -1,0 +1,20 @@
+---
+title: "project"
+author: "Rayan Rozi"
+date: "2022-11-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+sales = read.csv("dataset.csv")
+str(sales)
+```
+
+```{r}
+sales_clean = na.omit(sales)
+str(sales_clean)
+```

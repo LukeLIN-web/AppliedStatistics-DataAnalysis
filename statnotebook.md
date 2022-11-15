@@ -408,9 +408,7 @@ predict(mode,new.data,interval='p')
 abline(lm1) 
 ```
 
- anova, 就是显示. 
-
-SST = SSE  +SSR  , 
+  SST = SSE  +SSR  , 
 
 determination 系数, R^2,  = SSR/SST
 
@@ -549,4 +547,26 @@ A useful tool is the function residualPlots in the car package. This function pl
 ```
 curve(21.862962 + 1.849283*x + 0.051399*x^2, add=T, col='blue')
 ```
+
+
+
+### lec15
+
+multicollinearlity 
+
+
+
+poly  polynomial 回归. 
+
+大写的S 也是summary命令s
+
+
+
+```
+influencePlot
+```
+
+要会解释回归分析的系数是什么意思
+
+显著性, 可以用ncvTest
 
