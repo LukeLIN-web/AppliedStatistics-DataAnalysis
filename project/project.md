@@ -26,7 +26,5 @@ The proposal should include: (1) description of the dataset;
 
 11月30日 final report.
 
-User scores~ 
-
-Category add up. 
+User scores~ Category add up. 
 
