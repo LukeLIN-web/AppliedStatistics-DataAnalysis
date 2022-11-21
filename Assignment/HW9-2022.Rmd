@@ -15,39 +15,89 @@ Consider the prostate data set in the faraway package. Consider lpsa as the resp
 Do an exploratory analysis of the data. Do a matrix of plots. Which variables seem to have a linear relationship with the response? Compute and plot the correlation coefficients for the regressors. Comment on what you obtain.
 
 ```{r}
+library(ISwR) 
+library(corrplot)
 library(faraway)
 prostate = faraway::prostate
-summary(prostate)
-#res <- cor(dataB)
-#corrplot.mixed(prostate)
-
+drops <- c("svi","gleason")
+prostate = prostate[ , !(names(prostate) %in% drops)]
+pairs(prostate[,1:7],pch=19, lower.panel=NULL)
+res <- cor(prostate)
+corrplot.mixed(res)
 ```
+
+lcavol has biggest correlation coefficients with lpsa. age has smallest correlation coefficients with lpsa.
+
+So lcavol seem to have a linear relationship with the response.
 
 (b) Fit a model for lpsa with all the other variables as predictors. Calculate the variance inflation factors and eliminate variables with vif greater than two.
 
-```{r}
+lcp with vif greater than two.
 
+```{r}
+mod1 =  lm(lpsa ~ lcavol + lweight+ age + lbph + lcp + pgg45, data =prostate)
+vif(mod1)
+mod1 =  lm(lpsa ~ lcavol + lweight+ age + lbph + pgg45, data =prostate)
+vif(mod1)
 ```
 
 (c) Starting with the variables selected in (b), do a variable selection procedure using backward elimination with a p to remove equal to 0.15. Do also variable selection using the BIC criterion. Compare the models that you get. Do residual analysis for both of them. Comment on your results.
 
 ```{r}
-
+mod2 =  lm(lpsa ~ lcavol + lweight+ age + lbph + pgg45 +0, data =prostate)
+summary(mod2)
+mod2 =  lm(lpsa ~ lcavol + lweight+ age + pgg45 +0, data =prostate)
+summary(mod2)
 ```
+
+Firstly, we remove the Intercept. Secondly , we remove the lbph. Then, all p \< 0.15
+
+Do also variable selection using the BIC criterion. Compare the models that you get. Do residual analysis for both of them. Comment on your results.
+
+```{r}
+BIC(mod1)
+BIC(mod2)
+mod3 =  lm(lpsa ~ lcavol + lweight+ age + lbph + pgg45 +0, data =prostate)
+BIC(mod3)
+par(mfrow=c(2,2))
+plot(mod2)
+par(mfrow=c(1,1))
+```
+
+variable selection procedure using backward elimination has same BIC with model1.
+
+In general, the plots look good. In the first plot, the distribution of the residuals looks random and approximately symmetric. The red line is close to zero. The quantile plot is a straight line, in general seems reasonable. The third plot also looks reasonable, no increasing pattern can be seen in the local regression line. Finally, the fourth plot shows one point with high leverage and large value for Cook's distance (close to the contour line), which is point 32. This point should be checked in a more thorough study of the regression model.
+
+```{r}
+par(mfrow=c(2,2))
+plot(mod3)
+par(mfrow=c(1,1))
+```
+
+The residual figure is similar.
 
 (d) Which model would you select and why?
 
-```{r}
+    I select the model 2 mod2 = lm(lpsa \~ lcavol + lweight+ age + pgg45 +0, data =prostate) , since the BIC is low. Residuals vs Fitted is low. The quantile plot is partivularly good.
 
-```
+<!-- -->
 
 (e) Suppose a new patient with the following values arrives:
 
-Table 1: Variables for a new patient lcavol lweight age Ibph lcp pgg45 1.44692 3.623 65 0.30 -0.799 15.0 Predict the lpsa for this patient along with appropriate 98% prediction and confidence intervals.
+Table 1: Variables for a new patient
+
+lcavol lweight age Ibph lcp pgg45
+
+1.44692 3.623 65 0.30 -0.799 15.0
+
+Predict the lpsa for this patient along with appropriate 98% prediction and confidence intervals.
 
 ```{r}
-
+a = data.frame(lcavol=1.44692,lweight=3.623,age=65,Ibph=0.30,lcp=-0.799,pgg45=15.0)
+predict.lm(mod2,a,level=0.98)
 ```
+
+The predicted lpsa is 2.4439
 
 ## Question2
 
@@ -58,24 +108,72 @@ i)  Subset the data corresponding to the variables mentioned above. Plot birthwt
 ```{r}
 birthweight <- read.csv('Birthweight.csv',header=T)
 summary(birthweight)
-subset()
-
+birthdata = subset(birthweight,select = c(birthwt,mppwt,smoker))
+rbPal <- colorRampPalette(c('red','blue'))
+Color <- rbPal(10)[as.numeric(cut(birthdata$smoker,breaks = 10))]
+model1 = lm(birthwt ~ mppwt ,data= birthdata)
+plot(birthwt ~ mppwt ,data= birthdata,col=Color )
+abline(model1)
 ```
+
+```{r}
+summary(model1)
+```
+
+Multiple R-squared = 0.1518, it is low, means the linear model fit bad with data.
 
 (ii) We want to add smoker as a categorical regressor to the previous model. Fit a complete model including interaction and work your way to a minimal adequate model. Write down the equation for you final model and interpret the coefficients.
 
 ```{r}
-
+model2 = lm(birthwt ~ mppwt + smoker ,data= birthdata)
+summary(model2)
+vif(model2)
 ```
+
+birthwt = 3.54944 + 0.033 ∗ mppwt - 0.8258 \*smoker
+
+The mppwt coefficient is 0.033. It means that an increase of 1 unit in the weight of the mother before pregnancy produces an increase of 0.08063 degrees in body weight.
+
+The smoker coefficient is 0.8258 and is statitically significant at the usual levels.. It means that mother is a smoker produces an decrease of 0.8258 degrees in body weight.
 
 (iii) Draw a scatter plot of birthwt against mppwt and color the dots according to the value of smoker. Add the regression lines for your model. Predict the birthwt value for a mppwt value of 120 and both values for smoker. Add prediction intervals at the 98% level.
 
 ```{r}
-
+library(car)
+scatterplot(birthwt ~ mppwt ,data= birthdata,col=Color)
+abline(model2)
+a = data.frame(mppwt=120,smoker=1)
+predict.lm(model2,a,level=0.98)
+b = data.frame(mppwt=120,smoker=0)
+predict.lm(model2,b,level=0.98)
 ```
+
+If smoker = 1, predicted birthwt = 6.678
+
+If smoker = 0, predicted birthwt = 7.50
 
 (iv) State clearly the assumptions on which the regression model is based. Using graphs and hypothesis tests, do a diagnostic analysis for the model you fitted and verify whether these assumptions are satisfied.
 
 ```{r}
-
+par(mfrow = c(2,2))
+plot(model2)
+par(mfrow=c(1,1))
 ```
+
+All the plots look reasonable. In the first plot, the distribution of the residuals looks random and approximately symmetric. The quantile plot shows some departures at the tails, but in general seems reasonable. We can confirm this using the Shapiro-Wilk test on the standardized residuals:
+
+```{r}
+shapiro.test(rstandard(model2))
+```
+
+The p-value for this test is large, so we cannot reject the hypothesis of normality.
+
+The third plot also looks reasonable although a slight decreasing pattern can be seen in the local regression line. To confirm whether this is significant, we use the ncv test
+
+```{r}
+ncvTest(model2)
+```
+
+Since the p-value is above 0.05 threshold, we conclude that there is no heteroscedasticity.
+
+Finally, the fourth plot shows no point with high leverage and large value for Cook's distance (close to the contour line).

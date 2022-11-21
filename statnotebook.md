@@ -331,9 +331,15 @@ par(mfrow=c(1,1)) # 是为了不影响后面, 后面不会变成4张图.
 
 评论
 
+All the plots look reasonable. In the first plot, the distribution of the residuals looks random and approximately symmetric. The quantile plot shows some departures at the tails, but in general seems reasonable. We can confirm this using the Shapiro-Wilk test on the standardized residuals:
+
 In general, the plots look good. The quantile plot is partivularly good, so there are no doubts about normality. The only point that may raise cause for concern is the assumption of homoscedasticity, since the scale-location lot shows a small increasing tendency. We can check this with a test.
 
 Do the diagnostic plots for this model and comment   normal性质 好或者不好 .  
+
+The third plot also looks reasonable although a slight decreasing pattern can be seen in the local regression line. To confirm whether this is significant, we use the ncv test
+
+Finally, the fourth plot shows one point with high leverage and large value for Cook’s distance (close to the contour line), which is point 29. This point should be checked in a more thorough study of the regression model.
 
 ##### 如果不好
 
@@ -452,8 +458,6 @@ summary , p 很小, 拒绝假设, 两个参数和0不同.
 
 confint, 
 
-
-
 #### boxcox
 
 Box-Cox变换是一个变换系列，试图纠正数据的非正态性。 该图显示了参数λ的对数似然。和一个大约95%的置信区间。通常情况下，如果这个置信区间包括零，我们应该试着进行对数变换，也就是λ=0时的变换。
@@ -521,8 +525,6 @@ corrplot.mixed(cor.ex4)#可以看图的correlation matrix
 
 What is the p-value for the overall significance test for the regression?
 
-
-
 怎么预测predict? Predict the `res` value for a subject with covariates `(var1,var2,var3,var4,var5) = (65,100,50,0.02,3)`. Add a confidence interval at level 98%.
 
 ```{r}
@@ -540,15 +542,11 @@ result = predict(model1,a,level=0.98)
 
 A useful tool is the function residualPlots in the car package. This function plots residuals against all the regressors and also against fitted values, and adds a quadratic term. It also tests the significance of the added term and lists the p-values. In thie case, the quadratic term for carats has a small p-value.
 
-
-
 画曲线要用curve
 
 ```
 curve(21.862962 + 1.849283*x + 0.051399*x^2, add=T, col='blue')
 ```
-
-
 
 ### lec15
 
@@ -569,4 +567,29 @@ influencePlot
 要会解释回归分析的系数是什么意思
 
 显著性, 可以用ncvTest
+
+删除部分列. 
+
+```R
+drops <- c("svi","gleason")
+prostate = prostate[ , !(names(prostate) %in% drops)]
+```
+
+怎么Compute and plot the correlation coefficients for the regressors.  
+
+variance inflation factors vif,是什么? 就是 `vif(mod1)`
+
+#modelAIC <- stepAIC(mod1)
+
+```
+Intercept
+```
+
+BIC criterion是什么?
+
+就是BIC(mod1)
+
+
+
+categorical regressor  怎么写? 
 

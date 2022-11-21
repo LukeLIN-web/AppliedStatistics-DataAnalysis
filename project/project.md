@@ -28,3 +28,4 @@ The proposal should include: (1) description of the dataset;
 
 User scores~ Category add up. 
 
+是否假设成立, 
