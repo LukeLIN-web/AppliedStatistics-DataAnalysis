@@ -18,10 +18,6 @@ The proposal should include: (1) description of the dataset;
 
  (4) plan for analysis and modeling.
 
-
-
-
-
 可以做很多模型, 
 
 11月30日 final report.
@@ -29,3 +25,11 @@ The proposal should include: (1) description of the dataset;
 User scores~ Category add up. 
 
 是否假设成立, 
+
+需要两个model, predict user 或别的 . 第二个是 预测 gobal sell.
+
+introduction. 
+
+
+
+我可以做 correlation  plot.  
