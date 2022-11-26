@@ -35,13 +35,23 @@ summary(modela)
 Th estimated standard deviation is  0.0048 and the R^2 is  0.8435$.
 
 
+The estimated values for the intercept and slope are 1.44 × 10−3 and 1.38 × 10−5, respectively. Weight has a very small p-value while the p-value for the intercept is big, which says that the intercept is not significantly different from zero.
+截距和斜率的估计值分别为1.44×10-3和1.38×10-5。重量的p值非常小，而截距的p值却很大，这说明截距与零没有显著区别。
+
+
 (ii) Draw the diagnostic plots. Do you identify any point as an outlier? If you do, which point is this? Can you identify this point in the initial scatterplot? Can you find a reason why this point is different from the rest?
 ```{r}
 par(mfrow=c(2,2))
 plot(modela)
 par(mfrow=c(1,1))
 ```
-We can easily find that 40,80,3 is the outlier. 
+We can easily find that 40,80,3 is the outlier.  因
+答案: 40号点在所有的诊断图中都被标记出来。它是残差最大的一个点，在量化图中，它离其他的点和参考线都很远。在比例-位置图中，该点对应的数值大于2。为了确定40号位置的点，我们写
+```{r}
+plot(City.fc ~ Weight, data = data1, pch = 16)
+points(City.fc ~ Weight, data = data1[40,], pch = 16, col = 'red')
+```
+不是用肉眼去看. 
 
 (iii) Fit a new regression model excluding the outlier(s) you identified in the previous section. Draw a scatterplot with both regression lines. 
 ```{r}
@@ -49,12 +59,13 @@ myData <- City[-c(40,80,3), ]
 modelb = lm(City.fc ~ Weight,data = myData)
 scatterplot(City.fc~Weight, data=myData)
 ```
+
 Compare the summary tables.
 ```{r}
 summary(modelb)
 ```
-Th estimated standard deviation is  0.0035, less than previous section. and the R^2 is  0.9049, higher than previous section.
- 
+Th estimated standard deviation is  0.0035, less than previous section. and the R^2 is  0.9049, higher than previous section. 
+答案是画出了两个model的abline. 都差距很小, 主要是 diagnostic好了很多. 
  
  Draw the diagnostic plots and comment.
 ```{r}
@@ -64,7 +75,8 @@ par(mfrow=c(1,1))
 ```
 
 The quantile plot is better than previous section, there are no doubts about normality.
-
+答案: We see that the main difference with the previous model occurs in the quantile plot. The plot excluding point
+40 looks better now. 
 
 
 (iv) Run the Shapiro-Wilk test on the residuals for both models and compare the results.
@@ -74,7 +86,7 @@ shapiro.test(rstandard(modelb))
 ```
 For previous model, p value is small, so we can reject the hypothesis of normality.
 For modelb, p-value for this test is large, so we cannot reject the hypothesis of normality.
-
+综上所述，第40点是一个离群点，但不是回归中的一个影响点，因为当该点被排除时，回归方程没有实质性的改变。然而，当该点被纳入时，残差的正态性假设没有得到验证。
 
 ## Question2
 
@@ -95,7 +107,7 @@ Obtain a summary for the regression
 summary(model1)
 ```
 Th estimated standard deviation is 9.228, very big.  And the R^2 is  0.88$.
-
+答案: 摘要中的结果并没有反映出该模型不充分的事实。系数的p值都很小，而R2几乎是88%。
 draw the diagnostic plots. Comment on the results
 ```{r}
 par(mfrow=c(2,2))
@@ -103,9 +115,9 @@ plot(model1)
 par(mfrow=c(1,1))
 ```
 In this case some of the diagnostic plots have issues. In residuals against fitted values, the majority of the residuals are negative, the red line is far from 0 and is not horizontal. The quantile plot is low. 
-The residuals vs leverage plot has somes points with large value for leverage and high residual. This would not be an acceptable model.
+The residuals vs leverage plot has some points with large value for leverage and high residual. This would not be an acceptable model.
 
-
+这些图清楚地表明，该模型是不充分的。拟合模型的所有假设在这种情况下都被违反了。 All the assumption made to fit the model are violated in this case
 
 (ii) Use the function boxcox on the MASS package with the argument set to the model you fitted in (i). If the maximum value in the graph is close to an integer value, use this integer as the exponent in a power transformation for Pressure, i.e., if P is the Pressure variable in the dataset, the new variable TP is given by
 TP = P^i
@@ -131,6 +143,7 @@ summary(model2)
 ```
 
 Th estimated standard deviation is 0.0001138, very small, on the contrary, the previous one is very big.  and the R^2 is  0.9998$.
+答案: 斜率的P值等于零，而截距的P值很大，我们不能拒绝截距等于零的零假设。
 
 ```{r}
 par(mfrow=c(2,2))
@@ -141,15 +154,24 @@ par(mfrow=c(1,1))
 In this case some of the diagnostic plots have improved. In residuals against fitted values, the residuals are much smaller than previous section, the red line is close 0. 
 
 
+
+
 (iii) If in the model you fitted in (ii), the p-value for the intercept is large, fit a model without intercept by adding + 0 at the end of the regression equation in the call to the lm function. Use this model to write down an equation for the relation between pressure and volume for a gas. What would be the predicted Pressure for a point with Height = 32? 
 
 Pressure =  1.6458 * Height ,  
 1.6458* 32 = 52.6656 
+这个写的不对, 没有倒数
 Draw a scatterplot of Pressure against Height and add the regression line for the first model and the curve you obtained with the second regression.
 
 ```{r}
-model3 = lm(Pressure~Height+0,data = data2)
+model3 = lm(1/Pressure~Height+0,data = data2)
 summary(model3)
 scatterplot(Pressure~Height, data = data2)
 abline(model2)
 ```
+
+curve(1407.46/x, 10, 50, add =T, col = 'red')
+
+
+
+

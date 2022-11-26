@@ -16,16 +16,22 @@ library(ISwR)
 library(corrplot)
 dataB <- read.table('dataB',header=T)
 pairs(dataB[,1:5],pch=19, lower.panel=NULL)
+scatterplotMatrix(dataB)
 res <- cor(dataB)
 corrplot.mixed(res)
 ```
+答案: 
+Looking at the graphs in the bottom row, where res is in the y-axis, var1 and var4 seem to have no relation with res, while var5 shows a strong linear relation with positive slope. The remaining variables, var2 and var3 have a (moderate) linear relation with res with positive slope, but there is more variability in these cases.
+变量var3和var4有适度大的负相关，可能造成多重共线性multicollinearity问题。变量var5与res有一个重要的正相关关系。这一点在上一张图中已有评论。变量var2和var3与res有一个中等程度的正相关。
 
-We can find that  var5~res has largest correlation. var1 has small correlation with others.
+We can find that  var5~res has largest correlation,shows a strong linear relation with positive slope. var1 has small correlation with others.
+
 (ii) Fit a complete model for `res` including all the other variables. Produce a summary table and interpret the t tests in the table. What is the p-value for the overall significance test for the regression?
 ```{r}
 model1 <- lm(res ~ var1 + var2 + var3 +var4+var5  , data = dataB)
 summary(model1)
 ```
+答案 : Variables var3 and var4 have large p-values and the coeffcients are not significantly different form zero. The other variables have small p-values. The p-value for the overall significance test is 0 (< 2.2e-16) and appears at the bottom of the summary table.
 
 p-value: < 2.2e-16, so there is significant difference.
 
@@ -36,6 +42,9 @@ first we select var3 for elimination.
 model2 <- lm(res ~ var1 + var2 +var4+var5  , data = dataB)
 summary(model2)
 ```
+答案: 
+lm2 <- update(lm1, .~.-var3)
+var4 has a large p-value and so we drop it from the model.
 
 secondly, we select Intercept for elimination.
 ```{r}
@@ -43,6 +52,7 @@ model2 <- lm(res ~ var1 + var2 +var4+ var5+0  , data = dataB)
 summary(model2)
 ```
 now all p < 0.15.
+答案是要抛弃var4, 就是不要抛弃Intercept
 
 (iv) Plot the standard diagnostic graphs for the model that you selected and comment on what you observe.
 ```{r}
@@ -51,7 +61,9 @@ plot(model2)
 par(mfrow=c(1,1))
 ```
 We can easily find that 20,11,2 is the outlier. 
+All the plots look reasonable in this case. 
 
+要做分析. shapiro.test  ncvTest()
 
 (v) Predict the `res` value for a subject with covariates `(var1,var2,var3,var4,var5) = (65,100,50,0.02,3)`. Add a confidence interval at level 98%.
 
@@ -59,17 +71,26 @@ We can easily find that 20,11,2 is the outlier.
 a = data.frame(var1=65,var2=100,var3=50,var4=0.02,var5=3)
 result = predict.lm(model1,a,level=0.98)
 print(result)
+答案: predict(lm3,newdata, level = 0.98, interval = 'confidence')
 ```
 res = 234.623 
+需要一个上下界. 
+
 
 (vi) Print an anova table for the final model and find the estimated variance of the errors. Describe explicitly the sampling distribution for the estimated parameters.
 
 ```{r}
 anova(model2) 
 ```
+The estimated variance for the errors is the mean square error, which is 0.8. The sampling distribution for the estimated parameters is normal
+误差的估计方差是均方误差，为0.8。
 In ANOVA output with "Mean Sq" column.
 
+答案: 
+The sampling distribution for the estimated parameters is normal估计参数的抽样分布为正态分布
 The sampling distribution follows, F distribution.   This distribution is a type of probability distribution.
+where the covariance matrix V = σ2(X′X)−1 is
+vcov(lm3)
 
 
 ## Question 2 
@@ -86,6 +107,9 @@ abline(model4)
 ```
 
 we can see the regression line perfect fit most of points.
+答案: 
+The fit looks good but the central points are mostly below the regression line, while at the extremes they are above. This shows that the data has a curvature that the model is not capturing.
+拟合结果看起来不错，但中心点大多在回归线以下，而在极端点则在回归线以上。这表明，数据有一个曲率，而模型没有捕捉到。
 
 (ii) State clearly the assumptions on which the model is based and, using the standard diagnostic plots and any tests that are necessary, verify if these assumptions are valid in this case.
 
@@ -95,7 +119,11 @@ par(mfrow=c(2,2))
 plot(model4)
 par(mfrow=c(1,1))
 ```
+
+误差被假定为独立的，具有均值为零和共同方差为σ2的正态分布 . The errors are assumed to be independent, having a normal distribution with mean zero and common variance σ2.
+
 In this case, the diagnostic plots give sufficient information about the normality assumption. However, if we wanted to test this assumption, we could use the Shapiro-Wilk test. 
+
 ```{r}
 shapiro.test(rstandard(model4))
 ```
@@ -107,6 +135,7 @@ ncvTest(model4)
 ```
 The p-value for this test is large, so we cannot reject the hypothesis of homogeneous variance.
 
+The residuals vs fitted plot shows a quadratic pattern and the residuals are not symmetrically distributed. 第一张图不对称 The model is not adequate.
 
 (iii) Use the function `residualPlots` in the package `car`. This function was introduced in problem 2 of Problem List 8. The result of applying this function is twofold. On the one hand, graphs of residuals against fitted values and regressors are plotted, including (in blue) a quadratic term, and on the other hand, a couple of tests are performed and printed in the console. The first one tests whether a quadratic term in the regressor variable would be significant. Interpret the result you obtain.
 ```{r}
@@ -114,18 +143,24 @@ residualPlots(model4)
 ```
 The quadratic line corresponds to fitting a quadratic terms and the p-values appear below correspond to a test on the significance of this term. The graphs show, again, that the fit is not good.
 
+答案: The plots and tests indicate that a quadratic term in xvar should be included in the model.
+
 (iv) Add a quadratic term to the initial regression model. Print the summary table, and interpret the results. Draw the diagnostic plots and comment on them. 
 ```{r}
 model5 <- update(model4, ~. + I(xvar^2)) 
 summary(model5)
 ```
 In the new model, all terms are significant. The R^2 has increased form 0.995 to 0.9993
+答案: The quadratic term is highly significant. The R2 is almost one.
+The plots look better now and the tests are consistent with the hypotheses.
+yvar = 21.863 + 1.85 ∗ xvar + 0.0514 ∗ (xvar)2
 
 To calculate the AIC we use the function stepAIC
 ```{r}
 library(MASS)
 stepAIC(model5)
 ```
+模型就可以写出来. yvar = 21.863 + 1.85 ∗ xvar + 0.0514 ∗ (xvar)2
 
 The first model has an AIC of 67.966, and adding the quadratic term has reduced it to 64.2.
 
@@ -138,6 +173,7 @@ par(mfrow=c(1,1))
 All the plots have improved considerably. 
 The quantile plot is particularly good, the line is more like a straight line.  so there are no doubts about normality. 
 In residuals against fitted values, the red line is closer from 0.
+
 
 (v) Write an equation for the final model. Do a scatter plot and add the initial regression line and the curve for the quadratic model that you fitted in (iv).
 

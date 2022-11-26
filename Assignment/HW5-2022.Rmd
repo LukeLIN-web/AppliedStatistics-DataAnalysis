@@ -1,34 +1,47 @@
 ---
 title:    |
   | STAT 210
-  | Applied Statistics and Data Analysis: 
   | Homework 5
+  | Applied Statistics and Data Analysis: 
 author: Juyi Lin
 date: "Due on Oct. 9/2022"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Question 1 (60 pts)
-For this question, use again the data set `human` that we used in HW2. Read the file `Human_data.txt` and store this in an object called human. 
 
-(a) The body mass index (BMI) is defined as a person’s weight in kilograms divided by the square of height in meters. Add a column named `bmi` to the data frame with the value of this index for each subject. 
+For this question, use again the data set `human` that we used in HW2.
+Read the file `Human_data.txt` and store this in an object called human.
 
-(b) Using the function `cut` create a new variable `bmi.fac` in `human` by dividing the subjects into four categories according to the value of `bmi`: below 20 corresponds to underweight, greater than 20 and up to 25 is normal, greater than 25 and up to 30 is overweight and above 30 is obese. 
+(a) The body mass index (BMI) is defined as a person's weight in kilograms divided by the square of height in meters.
+    Add a column named `bmi` to the data frame with the value of this index for each subject.
 
-(c) Build a contingency table of `Gender` and the factor you created in (b). `Gender` should correspond to the rows of your table.
+(b) Using the function `cut` create a new variable `bmi.fac` in `human` by dividing the subjects into four categories according to the value of `bmi`: below 20 corresponds to underweight, greater than 20 and up to 25 is normal, greater than 25 and up to 30 is overweight and above 30 is obese.
 
-(d) Do a mosaic plot for the table in (c). Comment on what you observe on this graph.
+(c) Build a contingency table of `Gender` and the factor you created in (b).
+    `Gender` should correspond to the rows of your table.
 
-(e) Add a margin row and column to the table in (c) with the corresponding totals. 
-# (e) We can do this with the function addmargins: addmargins(tab1)
-(f) Build a table with the proportions with respect to the total number of cases for each gender. Comment on the results.
+(d) Do a mosaic plot for the table in (c).
+    Comment on what you observe on this graph.
 
-(g) We want to test whether the distribution of the `bmi` categories that you created  is the same for the different genders. What test would you use for this and why? What conditions need to be satisfied? Discuss whether they are in this example. Carry out this test and comment on your results.
+(e) Add a margin row and column to the table in (c) with the corresponding totals.
+    # (e) We can do this with the function addmargins: addmargins(tab1)
+
+(f) Build a table with the proportions with respect to the total number of cases for each gender.
+    Comment on the results.
+
+(g) We want to test whether the distribution of the `bmi` categories that you created is the same for the different genders.
+    What test would you use for this and why?
+    What conditions need to be satisfied?
+    Discuss whether they are in this example.
+    Carry out this test and comment on your results.
 
 ```{r}
 human = read.table("Human_data.txt",header = TRUE)
@@ -47,22 +60,24 @@ chisq.test(tab1)
 #fisher.test(tab1) 
 
 ```
-I observe that there are more(可以说the proportion of ) obese males than females and fewer underweight males than females on this graph. 
-I observe that overweight people have most portion no matter females or males. 
 
-I use Chi-Squared Test. Because the chi-square test is a non-parametric test, and the non-parametric test does not have the assumptions of specific parameters and overall normal distribution.
-Condition : p < 0.01, so that bmi is not the same for different genders. BMI has a relation with the genders.
+I observe that there are more(可以说the proportion of ) obese males than females and fewer underweight males than females on this graph.
+I observe that overweight people have most portion no matter females or males.
 
-答案: 这个图可以观测到 
-确实可以观测到, proportion of xxxis lower than
-卡方 , 比较 预期的frequencies  假设是有相同的分布 . 要求所有entry都大于5. 
+I use Chi-Squared Test.
+Because the chi-square test is a non-parametric test, and the non-parametric test does not have the assumptions of specific parameters and overall normal distribution.
+Condition : p \< 0.01, so that bmi is not the same for different genders.
+BMI has a relation with the genders.
+
+答案: 这个图可以观测到 确实可以观测到, proportion of xxxis lower than 卡方 , 比较 预期的frequencies 假设是有相同的分布 .
+要求所有entry都大于5.
 p很小, 可以拒绝.
 
 ## Question 2 (40 pts)
 
 Are newborn babies more likely to be boys than girls?
 
-(a) In the city of Comala, out of 5235 babies born, 2705 were boys.  Is this evidence that boys are more common than girls? State clearly the statistical procedure that you are using to answer this question. Describe the assumptions that you make. Are they reasonable in this case? Carry out this procedure and discuss your results.
+(a) In the city of Comala, out of 5235 babies born, 2705 were boys. Is this evidence that boys are more common than girls? State clearly the statistical procedure that you are using to answer this question. Describe the assumptions that you make. Are they reasonable in this case? Carry out this procedure and discuss your results.
 
 ```{r}
 tmp = c(rep(c('B'), times=2705) , rep(c('G'), times=5235-2705) )
@@ -76,16 +91,17 @@ binom.test(2705,5235,.5,'greater')
 #tab <- matrix(c(7, 5, 14, 19, 3, 2, 17, 6, 12), ncol=3, byrow=TRUE)
 ```
 
-比较一下 p =0.5 或者 p > 0.5.
+比较一下 p =0.5 或者 p \> 0.5.
 We use Chi-Squared Test.
 
 H0: In the general, newborn babies are not more likely to be boys than girls.
 H1 : In the general, newborn babies are more likely to be boys than girls.
-p >0.01，accept H0，newborn babies are not more likely to be boys than girls. 
-if we choose p<0.05, newborn babies are more likely to be boys than girls. 
-这是不对的! 
+p \>0.01，accept H0，newborn babies are not more likely to be boys than girls.
+if we choose p\<0.05, newborn babies are more likely to be boys than girls.
+这是不对的!
 
-(b) In the city of Macondo, out of 3765 babies born, 1905 were boys. Is there evidence that the frequency of boys is different in these two cities? Again, state clearly the statistical procedure that you are using to answer this question. Describe the assumptions that you make. Are they reasonable in this case? Carry out this procedure and discuss your results. 
+(b) In the city of Macondo, out of 3765 babies born, 1905 were boys. Is there evidence that the frequency of boys is different in these two cities? Again, state clearly the statistical procedure that you are using to answer this question. Describe the assumptions that you make. Are they reasonable in this case? Carry out this procedure and discuss your results.
+
 ```{r}
 tab = matrix(c(2705, 5235-2705,1905,3765-1905),ncol=2,byrow=TRUE)
 #boy = c(2705, 1905)
@@ -102,6 +118,7 @@ chisq.test(prfs)
 答案:
 prop.test(c(2705,1905), c(5235,3765))
 ```
+
 The χ2 test can also be used to test for independence of categorical variables in contingency tables.
 We use table to produce the contingency table for these two variables.
 
@@ -110,6 +127,5 @@ We use Chi-Squared Test.
 H0: there is no evidence that the frequency of boys is different in these two cities.
 H1 : there is evidence that the frequency of boys is different in these two cities.
 
-p>0.05,  we accept H0, there is no evidence that the frequency of boys is different in these two cities.
-答案是用prop test
-p很大, 所以不拒绝原假设. 
+p\>0.05, we accept H0, there is no evidence that the frequency of boys is different in these two cities.
+答案是用prop test p很大, 所以不拒绝原假设.

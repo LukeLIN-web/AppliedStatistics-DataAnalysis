@@ -1,0 +1,332 @@
+---
+title:      |
+  | STAT 210
+  | Applied Statistics and Data Analysis
+  | Second Exam  
+author: " "
+date: "November 26, 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**This exam is open notes and open book but not open internet. You are not allowed to surf the internet or look for answers to the questions**
+
+**You are reminded to adhere to the academic integrity code established at KAUST.**
+
+**Show complete solutions to get full credit. Label your graphs appropriately**
+
+**Please, do not submit zip files and identify the files you submit with your surname**
+
+***
+
+```{r echo=FALSE}
+options(width=70, digits=5)
+```
+
+
+For this exam, we will use the data in the file `dragons.txt`. Read the data onto a data frame. There are ten variables in the set:
+
+* `height`, the height in m,
+* `length`, the length from head to tail in m,
+* `weight`, the weight in tons,
+* `wing.ln`, the average length for the wings in m,
+* `leg.ht`, the average length for the legs in m,
+* `wing.span`, the distance between the tips of the outstretched wings,
+* `sp`, the species with two values, `black` and `gold`,
+* `age`, in years
+* `strength`, the strength index for the dragon, and 
+* `firepwr`, a combined measure of the caloric power, size and duration of the fire breath. 
+
+***
+
+## Question 1 (30 points)
+
+In this question, you have to explore the relationship between the variables `strength` and `wing.span`.
+
+
+(i) (2.5 pts) Graph a scatterplot of `strength` as a function of `wing.span`. Add the regression line for these variables and comment.
+
+```{r}
+dragons = read.table('dragons.txt')
+library(car)
+scatterplot(strength ~ wing.span ,data= dragons)
+```
+
+This plot produces a local smoother curve (broken line) that can be compared with the regression line. Important discrepancies indicate that the linear regression model is not adequate.
+
+(ii) (5 pts)  Fit a simple regression model for these variables and print the summary table. What is the $R^2$ for this model? Write down the equation for the model and give an interpretation of the parameters.  Predict the strength of a dragon with a wingspan of 60 m. and include a prediction interval.
+```{r}
+model1 = lm(strength ~ wing.span ,data = dragons)
+summary(model1)
+a = data.frame(wing.span = 60)
+predict.lm(model1,a,interval = 'p')
+```
+
+The $R^2$ = 0.4979. 
+Equation : 
+
+$strength = -134.4447 + 5.5502*wing.span$ 
+
+The Intercept -134.4447 is from Intercept estimated.  The slope 5.5502 is from wing.span estimated, it means one unit increase in wing.span will lead to 5.55 unit increase in strength. 
+
+We can predict the strength of a dragon with a wingspan of 60 m is 198.5699. and include a prediction interval from 64.18 to 332.96.
+
+
+(iii) (5 pts)  Use graphical methods and tests to check the assumptions on which the model is based. What are your conclusions?
+```{r}
+par(mfrow = c(2,2))
+plot(model1) 
+par(mfrow = c(1,1))
+shapiro.test(rstandard(model1))
+ncvTest(model1)
+```
+Firstly ,  we plot diagnostics plots.  All plots seem not good enough. The quantile plot is not match many points. We could check normality with Shapiro-Wilk test. In residuals against fitted values plot, the red line is not horizontal. The residuals vs leverage plot shows an increasing pattern. 
+
+In Shapiro-Wilk test, p is very small, so we can reject the hypothesis of normality.
+
+In Non-constant Variance Score Test , p is larger than 0.05,so we cannot reject the hypothesis of homogeneous variance. 
+Overall, The model is not adequate.
+
+(iv) (10 pts)  There are two species of dragons in the file, black and gold, and this characteristic is available in the categorical variable `sp`. We want to add this variable to the regression model. If the variable was not read as a `factor`, transform it before you continue. Fit a model that includes the previous variable, the new variable, and the interaction between the two. Using a critical value for $\alpha$ of 0.05 and starting with the complete model, select a minimal adequate model. 
+```{r}
+dragons$sp <- factor(dragons$sp)
+model2 = lm(strength ~ wing.span + sp ,data= dragons)
+summary(model2)
+lm1 <- lm(strength ~ ., data = dragons) 
+summary(lm1)
+```
+We choose a critical value of 0.05 for α. We remove wing.l  which has the largest p-value.
+
+```{r}
+lm2 <- update(lm1, ~. - wing.l)
+summary(lm2)
+```
+We now remove leg.ht
+```{r}
+lm3 <- update(lm2, ~. - leg.ht)
+summary(lm3)
+```
+```{r}
+lm4 <- update(lm3, ~. - age)
+summary(lm4)
+```
+```{r}
+lm5 <- update(lm4, ~. - firepwr)
+summary(lm5)
+lm6 <- update(lm5, ~. - weight )
+summary(lm6)
+lm7 <- update(lm6, ~. - height)
+summary(lm7)
+lm8 <- update(lm7, ~. - length)
+summary(lm8)
+```
+Finally we get a minimal adequate model. It is same with model2, we have wing.span and sp two variables. 
+
+(v) (7.5 pts)  Check the assumptions for the final model. Compare the adjusted $R^2$ with the previous model. Write down the equation for the regression model and predict the value of the strength for black and gold dragons of weight span 60 m, including prediction intervals. Compare with the previous prediction and comment.
+```{r}
+par(mfrow = c(2,2))
+plot(model2) 
+par(mfrow = c(1,1))
+shapiro.test(rstandard(model2))
+ncvTest(model2)
+```
+Firstly,  we plot diagnostics plots.  All plots seems improved. The quantile plot is match more points. We could check normality with Shapiro-Wilk test. In residuals against fitted values plot, the red line is closer to zero. The third plot also looks horizontal.
+
+In Shapiro-Wilk test, p is larger than 0.05, so we cannot reject the hypothesis of normality.
+
+In Non-constant Variance Score Test , p is larger than 0.05,so we cannot reject the hypothesis of homogeneous variance. 
+Thus, the model is better.
+
+```{r}
+a = data.frame(wing.span=60,sp='gold')
+predict.lm(model2,a,interval = 'p')
+a = data.frame(wing.span=60,sp='black')
+predict.lm(model2,a,interval = 'p')
+```
+
+The adjusted $R^2$  is much larger than the previous model. So that this model is better.
+ 
+Equation : 
+
+spgold =1 if sp is gold . spgold =0 if sp is black.
+
+$strength = -168.8036 + 118.3223*spgold + 5.1935 *wing.span$ 
+
+We can predict the strength of a dragon with a wingspan of 60 m, black dragons is 142.8068, and include a prediction interval from 87.88 to 197.73.
+We can predict the strength of a dragon with a wingspan of 60 m, gold dragons is 261.1291, and include a prediction interval from 206.08 to 316.17. Compare with the previous prediction, the interval are smaller.
+
+## Question 2 (30 points)
+
+In this question, we want to explore the relation between the weight (`weight`) and the length (`length`) of dragons.
+
+(i) (15 pts) Start by plotting a graph of `weight` as a function of `length`.  Fit a simple regression model and add a regression line to the plot. What is the $R^2$ for this model? Write down an equation for the model and give an interpretation of the parameters. 
+
+```{r}
+plot(weight ~ length, data = dragons)
+model3 = lm(weight ~ length, data = dragons)
+abline(model3)
+summary(model3)
+```
+The $R^2$ for this model is  0.9875. 
+
+Equation : 
+$weight = -65.368 + 2.19 * length$ 
+
+The slope 2.19 is the rate of increase of the weight per meter increase in length. The intercept shows when length equal to zero, weight is -65.368(which means nothing).
+
+Give a prediction of the weight of a dragon with a length of 58 m, including a confidence interval. State explicitly the assumptions on which this model is based. Check whether these assumptions are satisfied. Use the function `residualPlots` in the `car` package and interpret the graphs and results of the hypotheses test. What do these results suggest? 
+
+```{r}
+a = data.frame(length= 58)
+predict.lm(model3,a,interval = 'c')
+```
+We can predict the weight of a dragon with a length of 58 m is 61.83, including a confidence interval from 61.445 to 62.21.
+
+```{r}
+par(mfrow = c(2,2))
+plot(model3) 
+par(mfrow = c(1,1))
+shapiro.test(rstandard(model3))
+ncvTest(model3)
+residualPlots(model3, type = 'rstandard')
+```
+Firstly,  we plot diagnostics plots. The quantile plot seems good. We could check normality with Shapiro-Wilk test. The residuals against fitted values plot is not horizontal.  The third plot seems horizontal. The residuals vs leverage plot shows an increasing pattern.
+
+In Shapiro-Wilk test, p is large, so we cannot reject the hypothesis of normality.
+
+In Non-constant Variance Score Test, p is large,so we cannot reject the hypothesis of homogeneous variance. 
+
+`residualPlots`  function plots residuals against length and also against fitted values, and adds a quadratic term. It also tests the significance of the added term and lists the p-values.In this case, the quadratic term for length has a small p-value. It suggests that we can add a quadratic term in model.
+
+
+(ii) (15 pts) Fit a new model, including the term(s) suggested by the tests in (i), if any. Look at the summary table. What is the adjusted $R^2$ for this model?  Check whether the assumptions for linear regression are satisfied for the new model. Write an equation for the model. Give a prediction of the weight of a dragon with a length of 58 m, including a confidence interval, and compare it with the result in part (i).  
+
+```{r}
+model4 <- update(model3, ~. + I(length^2)) 
+summary(model4)
+```
+adjusted $R^2$  :  0.9892 
+
+Equation : 
+$weight = 0.99611 - 0.074 * length + 0.01921 * length^2$ 
+
+```{r}
+par(mfrow = c(2,2))
+plot(model4) 
+par(mfrow = c(1,1))
+shapiro.test(rstandard(model4))
+ncvTest(model4)
+```
+Firstly,  we plot diagnostics plots. We can see plots have improved. The quantile plot seems good. We could check normality with Shapiro-Wilk test. The residuals against fitted values plot is relatively horizontal. The third plot seems horizontal. The residuals vs leverage plot doesn't have increasing pattern now.
+
+In Shapiro-Wilk test, p is large, so we cannot reject the hypothesis of normality.
+
+In Non-constant Variance Score Test , p is large,so we cannot reject the hypothesis of homogeneous variance. 
+
+```{r}
+a = data.frame(length= 58)
+predict(model4,a,interval = 'c')
+```
+We can predict the weight of a dragon with a length of 58 m is 61.29, including a confidence interval from 60.7955 to 61.7871. It is similar with the result in part (i).(a little bit smaller)
+
+
+## Question 3 (40 points)
+
+This question is about developing a model for `firepwr` as a function of the numerical variables in the set, excluding `strength`.
+
+(i) (5 pts) Do a scatterplot matrix for the numerical variables in the data set, excluding `strength`. Calculate and graph the correlation matrix for these variables. Comment on the results.
+
+```{r}
+scatterplotMatrix(dragons[,c(1:6,8,10)]) 
+ cor.dragon <- cor(dragons[,c(1:6,8,10)]) 
+corrplot::corrplot.mixed(cor.dragon )
+```
+
+The highest correlation corresponds to weight and length, with a value of 0.99.
+The firepwr has strong negative correlation with age.
+
+
+(ii) (15 pts) Fit a regression model for `firepwr` as a function of the variables mentioned in (i). Using a critical $\alpha$ of 0.15 and a threshold for the variance inflation factor of 2, obtain a minimal adequate model that includes an intercept. Comment on the steps that you take.
+
+```{r}
+lm1 = lm(firepwr ~ height+length+weight+ wing.l+ leg.ht+wing.span + age  ,data= dragons)
+summary(lm1)
+```
+We choose a critical value of 0.15 for α. We remove wing.l  which has the largest p-value.
+```{r}
+lm2 <- update(lm1, ~. - wing.l)
+summary(lm2)
+lm3 <- update(lm2, ~. - wing.span)
+summary(lm3)
+lm4 <- update(lm3, ~. - leg.ht)
+summary(lm4)
+lm5 <- update(lm4, ~. - weight)
+summary(lm5)
+```
+So now we obtain a model, satisfy the alpha requirement. Now take variance inflation factors  test.
+```{r}
+vif(lm5)
+```
+And their vif all smaller than 2. 
+
+(iii)  (7.5 pts) Fit a model using the BIC criterion and compare it with the result of (ii).
+```{r}
+library(MASS) 
+stepAIC(lm1, k = log(43))
+```
+This procedures selects a model with only two regressors. The step is same with the result of (ii). Results is height + age. Before this final step, it choose firepwr ~ height + length + age.
+Notice that the length is biggest in final alpha comparison. Thus, two method reach same model.
+
+(iv) (7.5 pts) Write an equation for the final model and predict the `firepwr` for a dragon with the following covariates. Include confidence intervals at the 99% level.
+```{r}
+model5 =lm(firepwr ~ height + age  ,data= dragons)
+a = data.frame(height=50,age=350)
+predict(model5,a, interval = 'c',confident = 0.99)
+confint(model5, level = 0.99)
+```
+Equation:
+$firepwr=  19.6694+  2.1239*height -0.2983  *age $ 
+
+\begin{center}
+Table 1: Covariates for  prediction \\
+\begin{tabular}{ccccccc}
+height & length & weight & wing.ln & leg.ht & wing.span & age  \\
+50     &  55    & 60     & 30      &  6     & 70        & 350 
+\end{tabular}
+\end{center}
+
+We can predict the `firepwr` for a dragon with the given covariates is 212.4557. and include a confidence interval from 18.23572 to 24.67568
+
+(v) (5 pts) Print an anova table for the final model and find the estimated variance of the errors. Describe explicitly the sampling distribution for the estimated parameters.
+```{r}
+anova(model5)
+```
+the estimated variance of the errors :93.6
+
+The estimated parameters are βˆ = (β^0 , β^1, ,β^2  ), which have a normal distribution:
+
+$βˆ = N (  ( β 0 , β 1,β 2 ) ′ , σ^ 2 ( X ′ X )^ {−1}$
+
+The matrix (X′X)^−1 is obtained in R with
+```{r}
+(invXtX <- summary(model5)$cov.unscaled)
+```
+The variance is unknown and is estimated by the mean square. The standard deviation is
+```{r}
+summary(model5)$sigma
+```
+and the estimated variance is
+```{r}
+summary(model5)$sigma^2
+```
+The estimated covariance matrix for βˆ can be obtained with 
+```{r}
+vcov(model5)
+```
+or multiplying σˆ2 times (X′X)−1 
+```{r}
+(summary(model5)$sigma^2)*invXtX
+```
