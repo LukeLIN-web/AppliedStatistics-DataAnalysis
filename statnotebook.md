@@ -51,7 +51,6 @@ lapply(l,myFun)
 ```
 x <- c(1,4,6.25)
 x[] <- 999
-x
 ## [1] 999 999 999
 x[0]是一种少见的做法， 结果返回类型相同、长度为零的向量， 如numeric(0)。 相当于空集。
 设向量x长度为, 则使用正整数下标时下标应在中取值。 如果使用大于的下标， 读取时返回缺失值，并不出错。 给超出的下标元素赋值， 则向量自动变长， 中间没有赋值的元素为缺失值。 
@@ -102,7 +101,7 @@ P(X <=z) = q
 
 #### Quantiles plots 
 
-`qqplot` ,用来比较一个dataset和分布的.
+`qqplot` ,用来比较一个dataset分布的.
 
 如果两个分布属于同一个location and scale family, 那么graph 大约是一条直线. 
 
@@ -122,13 +121,9 @@ R的apply函数怎么用？ - 李大猫的回答 - 知乎 https://www.zhihu.com/
 
 #### problemlist3
 
-正态分布
-
 工程师总是为这些测试设定98%的信心水平。在这个水平上为测试找到一个拒绝区域。检验统计量的值是在拒绝区域之内还是之外？你的结论是什么？
 
 1-alpha=0.98,  alpha = 0.02  双边拒绝域.  方差未知, 置信区间计算在中文书的164页.
-
-u = 500
 
 6）用R的命令进行这个测试，看看你得到的P值。你的结论是什么？
 
@@ -142,9 +137,7 @@ https://www.jianshu.com/p/cb53a7dc00e3 讲很好.
 
 ### lec5
 
-估计
-
-方法1 : 方差不知道的估计,  sn平方来估计  , 有高斯密度估算
+估计   方法1 : 方差不知道的估计,  sn平方来估计, 有高斯密度估算
 
 1-a 就是置信度.
 
@@ -160,6 +153,7 @@ https://www.jianshu.com/p/cb53a7dc00e3 讲很好.
 
 ```
 t.test(Theatre[Sex == 0], Theatre[Sex == 1], alternative = 'less')
+power.test
 ```
 
 p很小, 就拒绝原null假设.  
@@ -168,11 +162,9 @@ p很小, 就拒绝原null假设.
 
 `t.test(Theatre_ly, Theatre, paired = TRUE)`  或者也可能用 wilcoxon test.
 
-t.test要求是正态分布, 可以先用 qqplot  `shapiro.test(data2$dif)`来检验一下.  
+t.test要求是正态分布, 可以先用 qqplot 和  `shapiro.test(data2$dif)`来检验一下.  
 
  wilcoxon test. 要求分布是连续而且对称.
-
-power.test
 
 有的给定power, 有的给定confidence 
 
@@ -191,15 +183,13 @@ https://rpsychologist.com/d3/nhst/  可以看一些可视化.
 ```R
 var.test(sample1,sample2)
 with(example,)
-boxplot
+boxplot(Critic_Score~Platform, data = sale) #直接plot也可以
 加点可以用points(Hemo ~ jitter(Sulfa, amount = 0.05), data = q3.df, pch = 16, col = 'blue')
 ```
 
 Var(X-Y) = Var(X) + Var(Y) - 2 Cov(X,Y)
 
-样本数量多, 就用t检验. 
-
-p 太小了, 就拒绝.
+样本数量多, 就用t检验.   p 太小了, 就拒绝.
 
  table可以看各个类型的数量.
 
@@ -254,7 +244,7 @@ The expected value and variance for this distribution are given by E(nA) = np, V
 
 If n and p are such that np ≥ 5 and n(1 − p) ≥ 5 the binomial distribution can be approximated by the normal distribution.
 
-proportions test的假设, sample足够大, 
+proportions test的假设, sample足够多
 
 ```R
 prop.test(n.A,n,p_0)
@@ -343,7 +333,7 @@ par(mfrow=c(1,1)) # 是为了不影响后面, 后面不会变成4张图.
 
 2. In general, the plots look good. The quantile plot is partivularly good, so there are no doubts about normality. The only point that may raise cause for concern is the assumption of homoscedasticity, since the scale-location lot shows a small increasing tendency. We can check this with a test.
 
-Do the diagnostic plots for this model and comment   normal性质 好或者不好 .  
+Do the diagnostic plots for this model and comment ,  normal性质 好或者不好.  
 
 3. The third plot also looks reasonable although a slight decreasing pattern can be seen in the local regression line. To confirm whether this is significant, we use the ncv test.   Finally, the fourth plot shows one point with high leverage and large value for Cook’s distance (close to the contour line), which is point 29. This point should be checked in a more thorough study of the regression model.
 
@@ -379,7 +369,7 @@ The residuals vs leverage plot:
 
 ```r
 influenceIndexPlot(q4.mod) # 找outlier
-influencePlot(q4.mod) #查找 influential points.
+influencePlot(q4.mod) #查找 influential points
 ```
 
 ##### 如果改进了
@@ -392,7 +382,9 @@ All the plots have improved considerably.
 
 This test has a large p-value, saying that hypothesis of homoscedasticy is not rejected. 
 
-相对于同质变异数（Homoscedasticity）指的是一系列的[随机变量](https://zh.m.wikipedia.org/wiki/随机变量)间的方差相同,  **异质变异数**（英语：Heteroscedasticity），又称**分散不均一性**，指的是一系列的[随机变量](https://zh.m.wikipedia.org/wiki/随机变量)间的方差不相同，
+同质变异数（Homoscedasticity）指的是一系列的[随机变量](https://zh.m.wikipedia.org/wiki/随机变量)间的方差相同
+
+ **异质变异数**（英语：Heteroscedasticity），又称**分散不均一性**，指的是一系列的[随机变量](https://zh.m.wikipedia.org/wiki/随机变量)间的方差不相同，
 
 #### 方差uniform
 
@@ -560,10 +552,6 @@ a <- regsubsets(bmi ~ ., data = ex3.df)
 which.max(summary(a)$adjr2) # 那些带星号的就是适合的变量.
 ```
 
-
-
-
-
 #### problemlist
 
 第一题, leverage 的x太长, 去掉intercept可以变短.  只要standard  residuals不大就不会影响. 
@@ -647,9 +635,9 @@ scatterplotMatrix来检查 , 如果最后一行是直线, 那么没有relation, 
 
 变量var3和var4有适度大的负相关，可能造成多重共线性multicollinearity问题。变量var5与res有一个重要的正相关关系。这一点在上一张图中已有评论。变量var2和var3与res有一个中等程度的正相关。
 
-poly  polynomial 回归. 
+poly  ,polynomial 回归. 
 
-大写的S 也是summary命令s
+大写的S 也是summary命令
 
 ```
 influencePlot
@@ -659,7 +647,7 @@ influencePlot
 
 #### ncvTest
 
-显著性, 可以用ncvTest, 为了Check the constant variance assumption, 全称是Non-constant Variance Score Test . p 很大, 就不能拒绝 homogeneity of variances.  p 小, 就拒绝 homogeneity of variances
+显著性, 可以用ncvTest, 为了Check the constant variance assumption, 全称是Non-constant Variance Score Test . p 很大, 就不能拒绝 homogeneity of variances.  p 小, 就拒绝 homogeneity of variances. 
 
 #### 删除部分列
 
@@ -707,9 +695,4 @@ compare()
 
 考试 after experiment design, 不包括 experiment design.
 
-
-
 and the interaction between the two是什么意思? 
-
-
-

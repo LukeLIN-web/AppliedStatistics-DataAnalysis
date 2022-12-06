@@ -24,8 +24,6 @@ str(sales)
 ```{r}
 sales_clean = subset(sales, !is.na(User_Score) & !is.na(Critic_Score))
 
-#sales_clean = sales_clean[sample(nrow(sales_clean), 100), ]
-
 str(sales_clean)
 
 

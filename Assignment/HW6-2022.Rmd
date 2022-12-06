@@ -64,7 +64,7 @@ p = 0.0058, alpha = 0.01, p \< alpha, reject null hypothesis. We choose
 alternative that at least two of means are different. The treatments
 have an effect.
 
-anaova可以看出,The p-value is small and we reject the null hypothesis of no effect.
+anova可以看出,The p-value is small and we reject the null hypothesis of no effect.
 
 
 

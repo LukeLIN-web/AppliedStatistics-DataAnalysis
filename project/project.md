@@ -1,10 +1,6 @@
 # AppliedStatistics-DataAnalysis
 
-
-
 http://dataportals.org/search 
-
-
 
 **Proposal** (6-8 pages, including figures, double spaced). **Due on October 21**  
 
@@ -30,6 +26,15 @@ User scores~ Category add up.
 
 introduction. 
 
+我可以做 correlation  plot.   platform  是怎么分布的?  画一些相关图. 
 
 
-我可以做 correlation  plot.  
+
+
+
+
+
+
+
+
+

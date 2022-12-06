@@ -1,8 +1,8 @@
 ---
-title: "project"
-author: "Rayan Rozi"
+title: "ljy part"
+author: "Juyi Lin"
 date: "2022-11-14"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -15,6 +15,55 @@ str(sales)
 ```
 
 ```{r}
-sales_clean = na.omit(sales)
-str(sales_clean)
+sale = na.omit(sales)
+str(sale)
 ```
+we need convert User_Score chr to num 
+```{r}
+#mod1 = aov(Global_Sales~Platform, data = sale)
+#summary(mod1)
+#par(mfrow = c(2,2)) # bad
+#plot(mod1)
+sale$User_Score =  as.numeric(sale$User_Score) 
+boxplot(User_Score~Platform, data = sale) 
+boxplot(Critic_Score~Platform, data = sale) #
+a = table(sale$Platform)
+print(a)
+barplot(a,ylab = "Count",xlab="Platform",col="green")
+title("Distribution of Each Platform")
+```
+
+
+
+```{r}
+model1 = aov(Critic_Score~Platform, data = sale)
+summary(model1)
+model2 = aov(User_Score~Platform, data = sale)
+summary(model2)
+model.tables(model1, se = TRUE)
+model.tables(model1, 'means', se = TRUE)
+```
+
+
+```{r}
+par(mfrow = c(2,2))
+plot(model1)
+plot(model2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
